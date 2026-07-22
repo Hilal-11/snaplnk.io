@@ -220,4 +220,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 👤 Author
 
-Built by [Hiala](https://github.com/<your-username>) — based in Srinagar, Kashmir.
+Built by [Hiala](https://hila-11.com) — based in Srinagar, Kashmir.
