@@ -1,223 +1,361 @@
 # Snaplnk.io
 
-**A fast, modern URL shortener with QR codes, bio pages, and click analytics.**
+**A fast, modern URL shortener with QR code generation, click analytics, and a clean dashboard.** Built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, and Supabase.
 
-Snaplnk.io turns long links into short, branded URLs — with built-in QR code generation, geo-aware click tracking, and a clean dashboard to manage it all.
-
----
-
-## ✨ Features
-
-- 🔗 **Custom short links** — branded domains, custom slugs, bulk/multiple link creation
-- 📊 **Click analytics** — track clicks over time, top countries/cities, device & browser breakdown
-- 📱 **QR codes** — auto-generated for every link, downloadable as PNG
-- 🌐 **Bio pages** — a "link in bio" style landing page per user
-- 🗂️ **Link management** — archive, expire, and organize links by campaign/channel
-- 🔐 **Auth** — Google, GitHub, and email sign-in via Supabase Auth
-- ⚡ **Fast redirects** — Redis-backed caching for low-latency link resolution
-- 🎨 **Clean dashboard UI** — built with a consistent neutral/black design system
+Shorten long URLs, generate QR codes automatically, track every click with geo-location and device analytics, and manage everything from a single dashboard.
 
 ---
 
-## 🖼️ Preview
+## Features
 
-> _Add a screenshot or GIF of the dashboard here._
->
-> ```md
-> ![Snaplnk.io Dashboard](./public/screenshots/dashboard.png)
-> ```
+### Currently Implemented
+
+- **URL Shortening** — Create short links with auto-generated 7-character codes (using nanoid with an unambiguous alphabet that excludes 0/O/1/l/I). Custom alias support with uniqueness validation.
+- **QR Code Generation** — Every shortened link gets an auto-generated QR code, uploaded to Cloudinary and downloadable as PNG.
+- **Click Analytics** — Track clicks with device type, browser, OS, country/city/region (via Vercel edge geolocation), referrer domain, and bot detection. Visitor hashing for unique click counting.
+- **Smart Redirect** — 302 redirects that check link activity, expiration dates, and max click limits. Bot traffic is detected and excluded from click counters.
+- **Authentication** — Email/password signup and sign-in, plus Google and GitHub OAuth via Supabase Auth. Password visibility toggle and form validation.
+- **Dashboard** — Personalized greeting with user name and date, four stat cards with sparkline charts (links, clicks, QR codes, bio pages), quick-create link card, click analytics chart with 7d/30d/90d range toggle, recent links card with last-click location, full links table with search/filter/tabs/row actions.
+- **Link Management** — Archive/unarchive, soft delete/restore, copy short URL, download QR code, share via Web Share API, and context menu on each link row.
+- **Command Palette** — Ctrl+K quick-search for navigating dashboard sections with keyboard shortcuts.
+- **Responsive Design** — Mobile drawer navigation, adaptive sidebar, touch-friendly controls.
+
+### Planned / Placeholder Pages
+
+- Bio pages (link-in-bio landing pages)
+- QR codes management view
+- Archived, expired, deleted links views
+- Tags, custom domains, team/workspace management
+- API keys, billing/subscription, settings
+- Pricing, FAQ, docs, and blog pages
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | Next.js (App Router), React, TypeScript, Tailwind CSS |
-| **UI Components** | shadcn/ui, Framer Motion, react-icons |
-| **Backend / API** | Node.js, Express |
-| **Database** | MongoDB (link data, analytics) + Supabase/Postgres (auth, relational data) |
-| **Cache / Redirect Layer** | Redis |
-| **Auth** | Supabase Auth (Google, GitHub, Email) |
+| **Framework** | Next.js 16.2.10 (App Router), React 19.2.4 |
+| **Language** | TypeScript 5 |
+| **Styling** | Tailwind CSS v4, tw-animate-css, clsx, tailwind-merge |
+| **UI** | shadcn/ui (base-nova), @base-ui/react, motion (Framer Motion v12) |
+| **Icons** | lucide-react, react-icons (Feather, Heroicons, BoxIcons, etc.) |
+| **Auth** | Supabase Auth (@supabase/ssr, @supabase/supabase-js) |
+| **Database** | Supabase (PostgreSQL) with RPC functions |
+| **Short Codes** | nanoid (55-char unambiguous alphabet, 7-char codes) |
+| **QR Codes** | qrcode library, Cloudinary for image hosting |
 | **Charts** | Recharts |
-| **QR Generation** | `qrcode` (or your QR provider of choice) |
-| **Deployment** | Vercel (frontend) + your choice of Node host (backend) |
+| **Validation** | Zod v4 |
+| **Geolocation** | @vercel/functions (Vercel edge) |
+| **User-Agent Parsing** | ua-parser-js |
+| **Bot Detection** | isbot |
+| **Password Hashing** | bcryptjs |
+| **Date Formatting** | date-fns |
+| **Deployment** | Vercel |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-snaplnk/
-├── apps/
-│   ├── web/                  # Next.js frontend + dashboard
-│   │   ├── app/
-│   │   │   ├── dashboard/    # Authenticated dashboard routes
-│   │   │   ├── (marketing)/  # Public marketing site
-│   │   │   └── [shortCode]/  # Redirect handler
-│   │   ├── components/
-│   │   ├── lib/
-│   │   │   └── supabase/     # Supabase client (server + browser)
-│   │   └── public/
-│   └── api/                  # Express backend
-│       ├── src/
-│       │   ├── routes/       # /links, /qr, /analytics, /bio
-│       │   ├── models/       # MongoDB schemas
-│       │   ├── services/     # Redis cache, QR generation, geo lookup
-│       │   └── middleware/   # Auth, rate limiting
-│       └── package.json
-├── packages/
-│   └── ui/                   # Shared UI components (optional monorepo setup)
-└── README.md
+snaplnk.io/
+├── app/
+│   ├── layout.tsx                    # Root layout (Geist fonts)
+│   ├── page.tsx                      # Landing page (Header + Hero)
+│   ├── globals.css                   # Tailwind v4 + shadcn theme tokens
+│   ├── [shortCode]/
+│   │   └── route.ts                  # GET /:shortCode — redirect handler
+│   ├── (auth)/
+│   │   └── signup/
+│   │       ├── page.tsx              # Auth page wrapper
+│   │       └── SignupClient.tsx      # Full auth UI (email, Google, GitHub)
+│   ├── auth/
+│   │   ├── actions.ts                # Server actions: signUp, signIn, signOut, OAuth
+│   │   └── callback/
+│   │       └── route.ts              # OAuth callback handler
+│   ├── api/
+│   │   ├── links/
+│   │   │   ├── route.ts              # GET (list), POST (create) links
+│   │   │   └── [linkId]/
+│   │   │       └── route.ts          # GET, PATCH, DELETE single link
+│   │   └── analytics/
+│   │       └── overview/
+│   │           └── route.ts          # GET daily click counts
+│   └── dashboard/
+│       ├── layout.tsx                # Auth-protected dashboard shell
+│       ├── page.tsx                  # Main dashboard (greeting, stats, chart, links)
+│       ├── links/page.tsx            # Link management view
+│       ├── analytics/page.tsx        # Placeholder
+│       ├── qr-codes/page.tsx         # Placeholder
+│       ├── bio-pages/page.tsx        # Placeholder
+│       ├── archived/page.tsx         # Placeholder
+│       ├── expired/page.tsx          # Placeholder
+│       ├── deleted/page.tsx          # Placeholder
+│       ├── tags/page.tsx             # Placeholder
+│       ├── domains/page.tsx          # Placeholder
+│       ├── team/page.tsx             # Placeholder
+│       ├── api-keys/page.tsx         # Placeholder
+│       ├── billing/page.tsx          # Placeholder
+│       └── settings/page.tsx         # Placeholder
+├── components/
+│   ├── SnaplnkButton.tsx             # CTA button with hover shimmer
+│   ├── landing/
+│   │   ├── Header.tsx                # Landing nav (scroll-aware, mobile drawer)
+│   │   ├── HeaderAuthSection.tsx     # Auth-aware header controls
+│   │   ├── Hero.tsx                  # Hero with URL input, badge, feature pills
+│   │   └── TrustedSection.tsx        # "Trusted by 2M+" brand logo grid
+│   ├── dashboard/
+│   │   ├── DashboardShell.tsx        # Dashboard layout (sidebar + header + content)
+│   │   ├── DashboardHeader.tsx       # Top bar (breadcrumbs, search, create btn)
+│   │   ├── Sidebar.tsx               # Navigation sidebar (Overview/Manage/Account)
+│   │   ├── UserMenu.tsx              # User avatar dropdown menu
+│   │   ├── SearchBox.tsx             # Command palette (Ctrl+K)
+│   │   └── main/
+│   │       ├── DashboardGreeting.tsx  # "Welcome back, {name}" with date
+│   │       ├── StatsOverview.tsx      # 4 stat cards with sparklines
+│   │       ├── StatCard.tsx           # Reusable stat card
+│   │       ├── CreateLinkCard.tsx     # Quick-create link input
+│   │       ├── AnalyticsChart.tsx     # Click analytics area chart (7d/30d/90d)
+│   │       ├── RecentLinksCard.tsx    # Recent 3 links with click locations
+│   │       ├── RecentLinkActions.tsx  # Copy, download QR, share
+│   │       └── LinksTable.tsx         # Full links table with search/actions
+│   └── ui/
+│       ├── card.tsx                   # shadcn/ui Card
+│       └── interactive-grid-pattern.tsx  # Grid SVG pattern (hero background)
+├── config/
+│   ├── headerConfig.ts               # Landing page nav items
+│   └── routeLabels.ts                # Dashboard breadcrumb labels
+├── hooks/
+│   └── useUser.tsx                   # Supabase auth user hook
+├── lib/
+│   ├── utils.ts                      # cn() utility
+│   ├── supabase/
+│   │   ├── client.ts                 # Browser-side Supabase client
+│   │   ├── server.ts                 # Server-side Supabase client
+│   │   └── middleware.ts             # Middleware Supabase client factory
+│   ├── utils/
+│   │   ├── generateShortCode.ts      # nanoid 7-char code generator
+│   │   ├── generateQrCode.ts         # QR code buffer generator
+│   │   ├── cloudinary.ts             # Cloudinary upload/delete
+│   │   └── parseClickInfo.ts         # Click metadata extraction
+│   └── validators/
+│       └── links.schems.ts           # Zod schemas for create/update link
+├── public/                           # Static assets (logos, images)
+├── proxy.ts                          # Supabase auth middleware
+├── next.config.ts                    # Next.js configuration
+├── package.json                      # Dependencies & scripts
+├── tsconfig.json                     # TypeScript configuration
+├── components.json                   # shadcn/ui configuration
+├── eslint.config.mjs                 # ESLint flat config
+└── postcss.config.mjs                # PostCSS (Tailwind)
 ```
-
-> Adjust this to match your actual repo layout — update if you're not using a monorepo.
 
 ---
 
-## 🚀 Getting Started
+## Database Schema
+
+The project uses Supabase (PostgreSQL). Key tables inferred from the code:
+
+### `links`
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid | Primary key |
+| `owner` | uuid | References auth.users |
+| `title` | text | Optional display name |
+| `original_url` | text | Destination URL |
+| `short_code` | text | Unique slug (unique constraint) |
+| `domain` | text | snaplnk.io or custom |
+| `is_custom_alias` | boolean | Whether alias was user-defined |
+| `qr_code_url` | text | Cloudinary QR code URL |
+| `qr_code_public_id` | text | Cloudinary public ID for deletion |
+| `favicon_url` | text | Site favicon |
+| `clicks_count` | integer | Denormalized total clicks |
+| `unique_clicks_count` | integer | Unique visitor count |
+| `tags` | text[] | Array of tags |
+| `is_active` | boolean | Whether link is active |
+| `is_deleted` | boolean | Soft delete flag |
+| `archived_link` | boolean | Archive flag |
+| `expires_at` | timestamptz | Link expiration |
+| `max_clicks` | integer | Max click limit |
+| `is_password_protected` | boolean | Password gate |
+| `password_hash` | text | bcrypt hash |
+| `utm_source` | text | UTM tracking |
+| `utm_medium` | text | UTM tracking |
+| `utm_campaign` | text | UTM tracking |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+| `archived_at` | timestamptz | |
+| `deleted_at` | timestamptz | |
+| `last_clicked_at` | timestamptz | |
+
+### `click_events`
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid | Primary key |
+| `link_id` | uuid | References links.id |
+| `ip_address` | text | |
+| `user_agent` | text | |
+| `referrer` | text | |
+| `referrer_domain` | text | |
+| `country` | text | |
+| `country_code` | text | |
+| `city` | text | |
+| `region` | text | |
+| `device_type` | text | mobile, tablet, desktop |
+| `browser` | text | |
+| `browser_version` | text | |
+| `os` | text | |
+| `os_version` | text | |
+| `is_bot` | boolean | Bot detection flag |
+| `visitor_hash` | text | SHA-256 of IP + UA |
+| `clicked_at` | timestamptz | |
+
+### Supabase RPC Functions
+
+- `increment_clicks(p_link_id)` — Atomically increments click count
+- `daily_link_counts(p_owner, p_days)` — Daily link creation counts
+- `daily_click_counts(p_owner, p_days)` — Daily click totals
+- `daily_qr_counts(p_owner, p_days)` — Daily QR generation counts
+- `daily_bio_page_counts(p_owner, p_days)` — Daily bio page counts (placeholder)
+- `get_daily_clicks_for_owner(p_owner, p_days)` — Daily click data for analytics chart
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/api/links` | Create a short link | Required |
+| `GET` | `/api/links` | List user's links (with pagination, archive filter) | Required |
+| `GET` | `/api/links/:id` | Get single link details | Required |
+| `PATCH` | `/api/links/:id` | Update link (title, tags, archive, delete, etc.) | Required |
+| `DELETE` | `/api/links/:id` | Permanently delete a link (removes QR from Cloudinary) | Required |
+| `GET` | `/api/analytics/overview?range=7d\|30d\|90d` | Daily click counts for authenticated user | Required |
+| `GET` | `/:shortCode` | Redirect to original URL and log click | Public |
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB instance (local or Atlas)
-- Redis instance (local or Upstash/Redis Cloud)
-- A [Supabase](https://supabase.com) project
+- A Supabase project (for auth + database)
+- A Cloudinary account (for QR code image hosting)
 
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/<your-username>/snaplnk.git
-cd snaplnk
-```
-
-### 2. Install dependencies
+### Setup
 
 ```bash
-# Frontend
-cd apps/web && npm install
+# Clone the repository
+git clone <repo-url>
+cd snaplnk.io
 
-# Backend
-cd ../api && npm install
+# Install dependencies
+npm install
 ```
 
-### 3. Environment variables
+### Environment Variables
 
-Create a `.env.local` in `apps/web`:
+Create a `.env` file in the project root:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-NEXT_PUBLIC_API_URL=http://localhost:4000
-NEXT_PUBLIC_APP_DOMAIN=snapl.nk
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-Create a `.env` in `apps/api`:
+### Supabase Setup
 
-```env
-PORT=4000
-MONGODB_URI=mongodb://localhost:27017/snaplnk
-REDIS_URL=redis://localhost:6379
-SUPABASE_URL=your_supabase_url
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-JWT_SECRET=your_jwt_secret
-```
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Enable Email/Password, Google, and GitHub auth providers
+3. Create the `links` and `click_events` tables (see schema above)
+4. Enable Row Level Security (RLS) policies for both tables
+5. Create the RPC functions listed in the schema section
 
-### 4. Run locally
+### Cloudinary Setup
+
+1. Create a Cloudinary account at [cloudinary.com](https://cloudinary.com)
+2. Get your cloud name, API key, and API secret from the dashboard
+
+### Run
 
 ```bash
-# Terminal 1 — backend
-cd apps/api && npm run dev
-
-# Terminal 2 — frontend
-cd apps/web && npm run dev
+npm run dev
 ```
 
-Visit **http://localhost:3000** for the app and **http://localhost:4000** for the API.
+Opens at [http://localhost:3000](http://localhost:3000)
 
----
-
-## 🗄️ Database Schema (high level)
-
-**`links`** (MongoDB / Postgres)
-| Field | Type | Notes |
-|---|---|---|
-| `id` | uuid | Primary key |
-| `owner` | uuid | References the authenticated user |
-| `title` | string | Optional display name |
-| `original_url` | string | The destination URL |
-| `short_code` | string | Unique slug |
-| `domain` | string | Custom or default domain |
-| `qr_code_url` | string | Generated QR image URL |
-| `clicks_count` | number | Denormalized total clicks |
-| `is_deleted` | boolean | Soft delete flag |
-| `created_at` | timestamp | |
-
-**`link_clicks`** (event log — powers analytics/geo)
-| Field | Type | Notes |
-|---|---|---|
-| `link_id` | uuid | References `links.id` |
-| `country_code` | string | Resolved via IP geolocation |
-| `city` | string | |
-| `device` | string | |
-| `browser` | string | |
-| `created_at` | timestamp | |
-
----
-
-## 📡 API Overview
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/links` | Create a short link |
-| `GET` | `/api/links` | List links for authenticated user |
-| `GET` | `/:shortCode` | Redirect + log click event |
-| `GET` | `/api/links/:id/analytics` | Get click analytics for a link |
-| `GET` | `/api/links/:id/qr` | Get/generate QR code |
-| `POST` | `/api/bio-pages` | Create/update a bio page |
-
----
-
-## 🧪 Scripts
+### Scripts
 
 ```bash
-npm run dev        # Start dev server
-npm run build       # Production build
-npm run lint         # Lint codebase
-npm run test         # Run tests
+npm run dev      # Start development server
+npm run build    # Production build
+npm start        # Start production server
+npm run lint     # Run ESLint
 ```
 
 ---
 
-## 🗺️ Roadmap
+## Architecture Highlights
 
-- [ ] Custom domains per user
-- [ ] Team/workspace support
-- [ ] Link expiration rules & password protection
-- [ ] UTM builder
-- [ ] Public API + API keys
+### URL Shortening Flow
+
+1. User enters a URL on the landing page or dashboard
+2. `POST /api/links` validates the URL and optionally checks custom alias uniqueness
+3. A 7-character short code is generated via `nanoid` (alphabet: `23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`)
+4. A QR code is generated as a `Buffer` via the `qrcode` library
+5. The QR buffer is uploaded to Cloudinary via `streamifier`
+6. The link record is inserted into Supabase with the QR URL
+
+### Redirect Flow
+
+1. Visitor hits `GET /:shortCode`
+2. Server queries Supabase for a matching `short_code` where `is_active = true` and `is_deleted = false`
+3. Checks `expires_at` (if set) and `max_clicks` (if set)
+4. If valid, fires a `logClick` function (async, fire-and-forget):
+   - Parses IP, user-agent, referrer, geolocation (Vercel edge), device type, browser, OS
+   - Detects bots via `isbot` (bots are logged but don't increment the click counter)
+   - Generates a `visitor_hash` (SHA-256 of IP + user-agent) for unique visitor counting
+   - Inserts a `click_events` row and calls `increment_clicks` RPC
+5. Redirects (302) to the original URL
+
+### Analytics
+
+- Daily click counts are fetched via the `get_daily_clicks_for_owner` RPC
+- The dashboard renders an area chart using Recharts with 7d/30d/90d range toggles
+- Stat cards show sparkline trends over the last 10 days with percentage change
+- Recent links display the last click location (city, country) per link
 
 ---
 
-## 🤝 Contributing
+## Configuration
 
-Contributions, issues, and feature requests are welcome. Feel free to check the [issues page](https://github.com/<your-username>/snaplnk/issues).
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- **Next.js** — `next.config.ts` allows custom dev origins
+- **TypeScript** — Strict mode enabled, path alias `@/*` maps to root
+- **Tailwind CSS v4** — Theme defined in `globals.css` with OKLCH color tokens, light and dark modes, custom radii
+- **shadcn/ui** — Configured with `base-nova` style in `components.json`
+- **ESLint** — Flat config with `eslint-config-next` (core-web-vitals + TypeScript)
 
 ---
 
-## 📄 License
+## Current Status
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Version **0.1.0** — Early stage. Core URL shortening, QR generation, redirect, click analytics, and dashboard are functional. Many dashboard sections (analytics detail view, QR management, bio pages, tags, domains, team, billing, settings) are placeholder pages awaiting implementation.
 
 ---
 
-## 👤 Author
+## Author
 
 Built by [Hiala](https://hila-11.com) — based in Srinagar, Kashmir.
+
+---
+
+## License
+
+MIT
