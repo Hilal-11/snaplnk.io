@@ -47,5 +47,17 @@ export const linkIdSchema = z.object({
   linkId: z.string().uuid("Invalid link ID"),
 });
 
+export const feedbackSchema = z.object({
+  type: z.enum([
+    "bug","feature","improvement","question","general",]),
+  title: z
+    .string().trim().min(5, "Title must be at least 5 characters.").max(100, "Title cannot exceed 100 characters."),
+  message: z
+    .string().trim().min(10, "Message must be at least 10 characters.").max(2000, "Message cannot exceed 2000 characters."),
+  rating: z
+    .number().int().min(1, "Rating must be between 1 and 5.").max(5, "Rating must be between 1 and 5.").optional(),
+});
+
+
 export type CreateLinkInput = z.infer<typeof createLinkSchema>;
 export type UpdateLinkInput = z.infer<typeof updateLinkSchema>;
