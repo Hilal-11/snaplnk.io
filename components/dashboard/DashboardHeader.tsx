@@ -16,13 +16,17 @@ import {
 } from "react-icons/fi";
 import { routeLabels } from "@/config/routeLabels";
 import CommandPalette from "./SearchBox";
+import CreateLinkDialog from "./CreateLinkDialog";
+import { MdOutlineFeedback } from "react-icons/md";
+import Feedback from "./Feedback";
+import { AnimatePresence } from "motion/react";
 export default function DashboardHeader() {
   const pathname = usePathname();
   const [dark, setDark] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const segments = pathname.split("/").filter(Boolean); // e.g. ["dashboard", "qr-codes"]
-
-
+  const [createOpen, setCreateOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(true);
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -87,9 +91,14 @@ export default function DashboardHeader() {
           </button>
           </div>
 
+         <AnimatePresence>
+          {feedbackOpen && (
+            <Feedback />
+          )}
+        </AnimatePresence>
 
           {/* Create link */}
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-colors">
+          <button onClick={() => setCreateOpen(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-colors">
             <FiPlus className="text-[14px]" />
             Create Link
           </button>
@@ -97,6 +106,7 @@ export default function DashboardHeader() {
         </div>
       </header>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      <CreateLinkDialog open={createOpen} onClose={() => setCreateOpen(false)} />
     </>
   );
 }
