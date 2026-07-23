@@ -62,7 +62,7 @@ export default function AnalyticsChart() {
         <p className="text-3xl font-bold text-neutral-900 tracking-tight">
           {totalInRange.toLocaleString()}
         </p>
-        <span className="flex items-center gap-1 text-xs font-semibold text-emerald-600">
+        <span className="flex items-center gap-1 text-xs font-semibold text-orange-600">
           <FiTrendingUp className="text-[13px]" />
           clicks in range
         </span>
