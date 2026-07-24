@@ -113,7 +113,7 @@ function LogoCell({ name, logo }: { name: string; logo: string }) {
 
 function TrustedSection() {
   return (
-    <section className="max-w-7xl mx-auto font-sans py-10 h-125 overflow-hidden">
+    <section className="max-w-7xl mx-auto font-sans py-10 h-auto overflow-hidden">
       <p className="text-center text-[14px] text-gray-400 mb-6">
         Trusted by <strong className="text-gray-500 font-sans font-medium">2M+ people</strong> to keep life organized
       </p>

@@ -4,6 +4,7 @@ import { BsStars } from 'react-icons/bs'
 import { FiBarChart2, FiBell, FiCheckSquare, FiGrid, FiLink, FiLoader } from 'react-icons/fi'
 import {  FiDownload } from 'react-icons/fi'
 import TrustedSection from './TrustedSection'
+import Footer from './Footer'
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { FiArrowRight, FiEdit3 } from "react-icons/fi";
 import { FaLocationArrow } from "react-icons/fa6";
@@ -47,6 +48,7 @@ export default function Hero() {
     }
   }
   return (
+    <div className="container ">
     <section className="relative font-sans w-full overflow-hidden px-4 lg:pt-12">
       
       <div
@@ -218,15 +220,18 @@ export default function Hero() {
             className="w-full h-full object-cover"
         />
         </div>
-
     </div>
-
     {/*  Trusted section  */}
     <div className="container mx-auto mt-10">
         <TrustedSection />
     </div>
 
     </section>
+    <div className="container mx-auto">
+      <Footer />
+    </div>
+
+    </div>
   )
 }
 

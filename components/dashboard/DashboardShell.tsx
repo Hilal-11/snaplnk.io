@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu,  } from "react-icons/fi";
 import Sidebar from "./Sidebar";
 import Image from "next/image";
 import DashboardHeader from "./DashboardHeader";
