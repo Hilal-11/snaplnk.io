@@ -1,5 +1,6 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
+import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import { useEffect, useMemo, useState } from "react";
 import {
   FiSearch,
@@ -45,11 +46,12 @@ function TagCard({ tag, index }: { tag: TagGroup; index: number }) {
 
       <div className="space-y-1.5">
         {tag.links.slice(0, 3).map((link) => {
-          const shortUrl = `${link.domain}/${link.short_code}`;
+          const fullUrl = getShortUrl(link.short_code);
+          const shortUrl = getShortUrlDisplay(link.short_code);
           return (
             <a
               key={link.id}
-              href={`https://${shortUrl}`}
+              href={fullUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between rounded-lg bg-neutral-50 px-3 py-2 text-xs hover:bg-neutral-100 transition-colors group"

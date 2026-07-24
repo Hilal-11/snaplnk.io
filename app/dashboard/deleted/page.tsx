@@ -2,22 +2,25 @@
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import {
   FiSearch,
   FiTrash2,
   FiMoreHorizontal,
   FiEye,
   FiLink,
-  FiAlertCircle,
+  FiClock,
   FiCalendar,
   FiBarChart2,
   FiTag,
   FiExternalLink,
   FiCopy,
   FiCheckCircle,
+  FiAlertTriangle,
+  FiRefreshCw,
+  FiAlertCircle,
   FiRotateCcw,
   FiXCircle,
-  FiInfo,
 } from "react-icons/fi";
 
 interface Link {
@@ -180,10 +183,11 @@ function DeletedRow({
   onPermanentDelete: (id: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
-  const shortUrl = `${link.domain}/${link.short_code}`;
+  const fullUrl = getShortUrl(link.short_code);
+  const shortUrl = getShortUrlDisplay(link.short_code);
 
   const copyLink = () => {
-    navigator.clipboard.writeText(`https://${shortUrl}`);
+    navigator.clipboard.writeText(fullUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -212,7 +216,7 @@ function DeletedRow({
                 )}
               </button>
               <a
-                href={`https://${shortUrl}`}
+                href={fullUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-0.5 rounded text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition shrink-0"

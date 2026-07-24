@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import {
   FiCopy,
   FiExternalLink,
@@ -135,7 +136,7 @@ function LinkMenu({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  const shortUrl = `http://${link.domain}/${link.short_code}`;
+  const shortUrl = getShortUrl(link.short_code);
 
   const handleViewAnalytics = () => {
     router.push(`/dashboard/analytics/${link.id}`);
@@ -350,10 +351,11 @@ function LinkRow({
   onDelete: (id: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
-  const shortUrl = `${link.domain}/${link.short_code}`;
+  const fullUrl = getShortUrl(link.short_code);
+  const shortUrl = getShortUrlDisplay(link.short_code);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`https://${shortUrl}`);
+    navigator.clipboard.writeText(fullUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -415,7 +417,7 @@ function LinkRow({
                 )}
               </button>
               <a
-                href={`https://${shortUrl}`}
+                href={fullUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-0.5 rounded text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition shrink-0"

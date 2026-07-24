@@ -1,5 +1,6 @@
 "use client";
 
+import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import { useEffect, useState, useRef } from "react";
 import {
   FiSearch,
@@ -102,8 +103,8 @@ export default function LinksTable() {
   );
 
 
-    function copyLink(linkId: string, domain: string, shortCode: string) {
-    navigator.clipboard.writeText(`http://${domain}/${shortCode}`);
+    function copyLink(linkId: string, shortCode: string) {
+    navigator.clipboard.writeText(getShortUrl(shortCode));
     setCopiedId(linkId);
     setTimeout(() => setCopiedId((current) => (current === linkId ? null : current)), 1500);
     }
@@ -226,10 +227,10 @@ export default function LinksTable() {
                       )}
                       <div className="min-w-0">
                         <p className="font-medium text-neutral-900 truncate max-w-[140px]">
-                          {link.title || `${link.domain}/${link.short_code}`}
+                          {link.title || getShortUrlDisplay(link.short_code)}
                         </p>
                         <p className="text-xs text-neutral-400 truncate max-w-[140px]">
-                          {link.domain}/{link.short_code}
+                          {getShortUrlDisplay(link.short_code)}
                         </p>
                       </div>
                     </div>
@@ -285,7 +286,7 @@ export default function LinksTable() {
                   <td className={`px-4 py-3 ${cellBorder}`}>
                     {/* row copy button */}
                     <button
-                    onClick={() => copyLink(link.id, link.domain, link.short_code)}
+                    onClick={() => copyLink(link.id, link.short_code)}
                     title="Copy link"
                     className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors"
                     >
@@ -327,7 +328,7 @@ export default function LinksTable() {
         icon={copiedId === activeLink.id ? FiCheck : FiCopy}
         label={copiedId === activeLink.id ? "Copied" : "Copy link"}
         onClick={() => {
-            copyLink(activeLink.id, activeLink.domain, activeLink.short_code);
+            copyLink(activeLink.id, activeLink.short_code);
         }}
         />
           <RowMenuItem icon={FiExternalLink} label="Open original" />

@@ -1,5 +1,6 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
+import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import { useEffect, useMemo, useState } from "react";
 import AnalyticsChartComponent from "@/components/dashboard/main/AnalyticsChart";
 import {
@@ -169,7 +170,8 @@ function TopLinksTable({ links }: { links: LinkRow[] }) {
           </thead>
           <tbody>
             {topLinks.map((link, idx) => {
-              const shortUrl = `${link.domain}/${link.short_code}`;
+              const fullUrl = getShortUrl(link.short_code);
+              const shortUrl = getShortUrlDisplay(link.short_code);
               return (
                 <tr
                   key={link.id}
@@ -184,7 +186,7 @@ function TopLinksTable({ links }: { links: LinkRow[] }) {
                     <div className="flex items-center gap-2.5">
                       <div className="min-w-0 flex-1">
                         <a
-                          href={`https://${shortUrl}`}
+                          href={fullUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-semibold text-neutral-900 hover:text-neutral-600 transition-colors truncate block"

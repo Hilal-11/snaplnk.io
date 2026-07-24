@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getShortUrl } from "@/lib/utils/getShortUrl";
 import { formatDistanceToNow } from "date-fns";
 import {
   FiBarChart2,
@@ -62,7 +63,7 @@ export default async function RecentLinksCard() {
 
         {links?.map((link) => {
           const location = lastLocationByLink.get(link.id);
-          const shortUrl = `http://${link.domain}/${link.short_code}`;
+          const shortUrl = getShortUrl(link.short_code);
 
           return (
             <div

@@ -1,5 +1,6 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
+import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import { useEffect, useState } from "react";
 import {
   FiSearch,
@@ -26,7 +27,7 @@ interface Link {
 
 function QrCard({ link }: { link: Link }) {
   const [copied, setCopied] = useState(false);
-  const shortUrl = `http://${link.domain}/${link.short_code}`;
+  const shortUrl = getShortUrl(link.short_code);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shortUrl);
@@ -185,7 +186,7 @@ export default function QrCodesPage() {
     return (
       link.short_code.toLowerCase().includes(q) ||
       (link.title ?? "").toLowerCase().includes(q) ||
-      `${link.domain}/${link.short_code}`.toLowerCase().includes(q)
+      `${getShortUrlDisplay(link.short_code)}`.toLowerCase().includes(q)
     );
   });
 

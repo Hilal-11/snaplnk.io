@@ -1,5 +1,6 @@
 "use client";
 
+import { getShortUrl } from "@/lib/utils/getShortUrl";
 import { useState } from "react";
 import {
   FiX,
@@ -94,7 +95,7 @@ export default function CreateLinkDialog({
     }
   }
 
-  const shortUrl = created ? `https://${created.domain}/${created.short_code}` : "";
+  const shortUrl = created ? getShortUrl(created.short_code) : "";
 
   function copyShortUrl() {
     navigator.clipboard.writeText(shortUrl);

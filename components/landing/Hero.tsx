@@ -37,7 +37,8 @@ export default function Hero() {
         setError("Something went wrong — no short code returned.");
         return;
       }
-      setShortUrl(`${process.env.NEXT_PUBLIC_BASE_URL}/${json.data.short_code}`);
+      const base = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+      setShortUrl(`${base.replace(/\/$/, '')}/${json.data.short_code}`);
       setUrl("");
     } catch {
       setError("Network error — please try again");

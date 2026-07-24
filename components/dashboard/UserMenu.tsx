@@ -77,7 +77,7 @@ function MenuItem({
   link?: string
 }) {
   return (
-    <Link href={link}
+    <Link href={link ?? "#"}
       className={`flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
         destructive
           ? "text-red-600 hover:bg-red-50"

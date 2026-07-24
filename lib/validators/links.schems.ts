@@ -56,6 +56,8 @@ export const feedbackSchema = z.object({
     .string().trim().min(10, "Message must be at least 10 characters.").max(2000, "Message cannot exceed 2000 characters."),
   rating: z
     .number().int().min(1, "Rating must be between 1 and 5.").max(5, "Rating must be between 1 and 5.").optional(),
+  pageUrl: z
+    .string().optional(),
 });
 
 
