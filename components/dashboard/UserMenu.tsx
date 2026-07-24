@@ -10,6 +10,7 @@ import {
   FiLogOut,
   FiUsers,
 } from "react-icons/fi";
+import Link  from "next/link"
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -29,13 +30,13 @@ export default function UserMenu() {
     <div className="relative" ref={menuRef}>
       {open && (
         <div className="absolute bottom-full left-0 mb-1 w-full rounded-xl border border-neutral-200 bg-white shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06)]">
-          <MenuItem icon={FiUser} label="View profile" />
-          <MenuItem icon={FiSettings} label="Account settings" />
-          <MenuItem icon={FiCreditCard} label="Billing" />
-          <MenuItem icon={FiUsers} label="Invite team members" />
-          <MenuItem icon={FiHelpCircle} label="Help & docs" />
+          <MenuItem icon={FiUser} label="View profile" link="dashboard/profile"/>
+          <MenuItem icon={FiSettings} label="Account settings" link="dashboard/settings" />
+          <MenuItem icon={FiCreditCard} label="Billing" link="" />
+          <MenuItem icon={FiUsers} label="Invite team members" link="" />
+          <MenuItem icon={FiHelpCircle} label="Help & docs" link="" />
           <div className="my-1 h-px bg-neutral-100" />
-          <MenuItem icon={FiLogOut} label="Log out" destructive />
+          <MenuItem icon={FiLogOut} label="Log out" link="" destructive />
         </div>
       )}
 
@@ -68,13 +69,15 @@ function MenuItem({
   icon: Icon,
   label,
   destructive,
+  link
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   destructive?: boolean;
+  link?: string
 }) {
   return (
-    <button
+    <Link href={link}
       className={`flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
         destructive
           ? "text-red-600 hover:bg-red-50"
@@ -83,6 +86,6 @@ function MenuItem({
     >
       <Icon className="text-[15px]" />
       {label}
-    </button>
+    </Link>
   );
 }
