@@ -103,7 +103,7 @@ export default function LinksTable() {
 
 
     function copyLink(linkId: string, domain: string, shortCode: string) {
-    navigator.clipboard.writeText(`https://${domain}/${shortCode}`);
+    navigator.clipboard.writeText(`http://${domain}/${shortCode}`);
     setCopiedId(linkId);
     setTimeout(() => setCopiedId((current) => (current === linkId ? null : current)), 1500);
     }
@@ -261,7 +261,7 @@ export default function LinksTable() {
 
                   <td className={`px-4 py-3 ${cellBorder}`}>
                     {link.is_active ? (
-                      <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                      <span className="flex items-center gap-1 text-xs font-medium text-neutral-700">
                         <FiCheckCircle className="text-[12px]" /> Active
                       </span>
                     ) : (

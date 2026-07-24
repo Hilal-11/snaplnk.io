@@ -2,7 +2,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatDistanceToNow } from "date-fns";
 import {
-  FiExternalLink,
   FiBarChart2,
   FiGlobe,
   FiMapPin,

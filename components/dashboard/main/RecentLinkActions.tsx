@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link";
 import { useState } from "react";
 import { FiCopy, FiCheck, FiDownload, FiShare2 } from "react-icons/fi";
 
@@ -47,17 +48,17 @@ export default function RecentLinkActions({
 
   return (
     <div className="flex items-center justify-end gap-1 mt-1 pl-12">
-      <ActionButton onClick={handleCopy} title="Copy link">
+      <ActionButton onClick={handleCopy} title="Copy link" shortUrl={shortUrl}>
         {copied ? <FiCheck className="text-emerald-600" /> : <FiCopy />}
       </ActionButton>
 
       {qrCodeUrl && (
-        <ActionButton onClick={handleDownloadQr} title="Download QR code">
+        <ActionButton onClick={handleDownloadQr} title="Download QR code" shortUrl={shortUrl}>
           <FiDownload />
         </ActionButton>
       )}
 
-      <ActionButton onClick={handleShare} title="Share">
+      <ActionButton onClick={handleShare} title="Share" shortUrl={shortUrl}>
         <FiShare2 />
       </ActionButton>
     </div>
@@ -65,21 +66,37 @@ export default function RecentLinkActions({
 }
 
 function ActionButton({
+  shortUrl,
   onClick,
   title,
   children,
 }: {
+  shortUrl: string,
   onClick: () => void;
   title: string;
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <Link
+      href={shortUrl}
       onClick={onClick}
       title={title}
       className="p-1 rounded-sm border border-neutral-200 bg-white text-neutral-500 shadow-sm hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 active:scale-[0.97] transition-all duration-150 text-sm"
     >
       {children}
-    </button>
+    </Link>
   );
 }
+
+// {shortUrl && (
+//         <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-2 text-sm">
+//           <Link
+//             href={shortUrl}
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="font-medium text-blue-600 hover:underline truncate"
+//           >
+//             {shortUrl}
+//           </Link>
+//         </div>
+//       )}
