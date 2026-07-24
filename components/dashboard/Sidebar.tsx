@@ -36,7 +36,7 @@ const navGroups = [
       { href: "/dashboard/links", label: "My Links", icon: FiLink },
       { href: "/dashboard/analytics", label: "Analytics", icon: FiBarChart2 },
       { href: "/dashboard/qr-codes", label: "QR Codes", icon: TbQrcode },
-      { href: "/dashboard/bio-pages", label: "Bio Pages", icon: FiUser },
+      { href: "/dashboard/bio-pages", label: "Bio Pages", icon: FiUser, disabled: true },
     ],
   },
   {
@@ -46,15 +46,15 @@ const navGroups = [
       { href: "/dashboard/expired", label: "Expired Links", icon: FiClock },
       { href: "/dashboard/deleted", label: "Deleted Links", icon: FiTrash2 },
       { href: "/dashboard/tags", label: "Tags", icon: FiTag },
-      { href: "/dashboard/domains", label: "Domains", icon: FiGlobe },
+      { href: "/dashboard/domains", label: "Domains", icon: FiGlobe, disabled: true },
     ],
   },
   {
     label: "Account",
     items: [
-      { href: "/dashboard/team", label: "Team", icon: FiUsers },
-      { href: "/dashboard/api-keys", label: "API Keys", icon: FiKey },
-      { href: "/dashboard/billing", label: "Billing", icon: FiCreditCard },
+      { href: "/dashboard/team", label: "Team", icon: FiUsers, disabled: true },
+      { href: "/dashboard/api-keys", label: "API Keys", icon: FiKey, disabled: true },
+      { href: "/dashboard/billing", label: "Billing", icon: FiCreditCard, disabled: true },
       { href: "/dashboard/settings", label: "Settings", icon: FiSettings },
     ],
   },
@@ -99,6 +99,17 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
               {group.items.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
+                if (item.disabled) {
+                  return (
+                    <li key={item.href}>
+                      <span className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-neutral-400 cursor-not-allowed select-none">
+                        <Icon className="text-[15px] text-neutral-300" />
+                        {item.label}
+                        <span className="ml-auto text-[10px] font-semibold text-neutral-300 bg-neutral-100 rounded-full px-1.5 py-0.5">Soon</span>
+                      </span>
+                    </li>
+                  );
+                }
                 return (
                   <li key={item.href}>
                     <Link
