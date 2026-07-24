@@ -10,6 +10,7 @@ export const routeLabels: Record<string, string> = {
   deleted: "Deleted Links",
   tags: "Tags",
   domains: "Domains",
+  profile: "Profile",
   team: "Team",
   "api-keys": "API Keys",
   billing: "Billing",
