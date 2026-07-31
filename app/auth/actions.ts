@@ -18,7 +18,7 @@ export async function signUp(formData: FormData) {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
     options: {
-      emailRedirectTo: `${getURL()}/auth/callback`,
+      emailRedirectTo: `${getURL()}/auth/callback?next=/dashboard/links`,
     },
   });
   if (error) return { error: error.message };
@@ -32,13 +32,13 @@ export async function signIn(formData: FormData) {
     password: formData.get("password") as string,
   });
   if (error) return { error: error.message };
-  redirect("/templates");
+  redirect("/dashboard");
 }
 
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/signup");
 }
 
 // ── OAuth ──────────────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ export async function signInWithGithub() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: `${getURL()}/auth/callback`,
+      redirectTo: `${getURL()}/auth/callback?next=/dashboard/links`,
     },
   });
   if (error) return { error: error.message };
@@ -59,7 +59,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${getURL()}/auth/callback`,
+      redirectTo: `${getURL()}/auth/callback?next=/dashboard/links`,
     },
   });
   if (error) return { error: error.message };
