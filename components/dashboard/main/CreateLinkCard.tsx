@@ -11,10 +11,10 @@ import {
   CalendarDays,
   Type,
   X,
-  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
+import { Spinner } from "@/components/ui/spinner";
 
 interface CreateLinkCardProps {
   baseUrl?: string; // falls back to NEXT_PUBLIC_BASE_URL
@@ -153,7 +153,10 @@ export default function CreateLinkCard({ baseUrl }: CreateLinkCardProps) {
               className="flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-black hover:bg-neutral-800 active:scale-[0.98] text-white text-xs font-semibold px-4 py-2.5 transition-all duration-150 disabled:opacity-50 disabled:active:scale-100"
             >
               {loading ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <>
+                  <Spinner className="size-3.5" />
+                  <span className="hidden xl:inline">Shortening</span>
+                </>
               ) : (
                 <>
                   <span className="hidden xl:inline">Shorten</span>

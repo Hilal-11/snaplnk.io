@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
+import { Spinner } from "@/components/ui/spinner";
 import {
   FiSearch,
   FiTrash2,
@@ -11,7 +12,6 @@ import {
   FiLink,
   FiClock,
   FiCalendar,
-  FiBarChart2,
   FiTag,
   FiExternalLink,
   FiCopy,
@@ -364,11 +364,11 @@ export default function DeletedPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-16">
-            <div className="inline-block animate-spin text-neutral-400">
-              <FiBarChart2 size={28} />
+          <div className="flex items-center justify-center py-16">
+            <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+              <Spinner className="size-5 text-neutral-500" />
+              <p className="text-sm font-medium text-neutral-600">Loading deleted links...</p>
             </div>
-            <p className="mt-4 text-sm text-neutral-500">Loading deleted links...</p>
           </div>
         ) : error ? (
           <div className="bg-white border border-neutral-200 rounded-2xl p-10 text-center">

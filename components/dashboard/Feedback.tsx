@@ -11,10 +11,10 @@ import {
   Lightbulb,
   HelpCircle,
   MessageCircle,
-  Loader2,
   CheckCircle2,
 } from "lucide-react";
 import { MdOutlineFeedback } from "react-icons/md";
+import { Spinner } from "@/components/ui/spinner";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -277,7 +277,7 @@ async function handleSubmit() {
               >
                 {state === "submitting" ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Spinner className="size-4" />
                     Sending...
                   </>
                 ) : (

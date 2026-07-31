@@ -2,6 +2,7 @@
 
 import { getShortUrl } from "@/lib/utils/getShortUrl";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import {
   FiX,
   FiLink,
@@ -215,7 +216,14 @@ export default function CreateLinkDialog({
                 disabled={loading}
                 className="mt-6 w-full flex items-center justify-center gap-2 rounded-lg bg-black hover:bg-neutral-800 active:scale-[0.99] text-white text-sm font-semibold py-2.5 transition-all disabled:opacity-50"
               >
-                {loading ? "Creating link..." : "Create short link"}
+                {loading ? (
+                  <>
+                    <Spinner className="size-4" />
+                    Creating link...
+                  </>
+                ) : (
+                  "Create short link"
+                )}
               </button>
             </>
           ) : (

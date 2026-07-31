@@ -1,6 +1,7 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import {
   FiUser,
   FiMail,
@@ -139,9 +140,9 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin text-neutral-400"><FiBarChart2 size={28} /></div>
-          <p className="mt-4 text-sm text-neutral-500">Loading profile...</p>
+        <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+          <Spinner className="size-5 text-neutral-500" />
+          <p className="text-sm font-medium text-neutral-600">Loading profile...</p>
         </div>
       </div>
     );

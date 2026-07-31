@@ -81,12 +81,12 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
         mobile ? "flex" : "hidden lg:flex"
       }`}>
       {/* Logo */}
-      <div className="flex items-center gap-2 px-5 h-16 border-b border-neutral-200/70">
+      <Link href="/" className="flex items-center gap-2 px-5 h-16 border-b border-neutral-200/70">
         <Image src={"/snaplinklogolight.svg"} width={30} height={30} alt={"snaplnk.io"} />
         <span className="font-semibold text-lg text-gray-900 tracking-tight">
           Snaplnk.io
         </span>
-      </div>
+      </Link>
 
       {/* Nav */}
       <nav className="flex-1 scrollbar-hide overflow-y-auto px-3 py-4 space-y-6">

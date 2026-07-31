@@ -19,6 +19,7 @@ import {
   FiCheck,
 } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
+import { Spinner } from "@/components/ui/spinner";
 
 const TABS = [
   { key: "all", label: "All Links" },
@@ -188,14 +189,18 @@ export default function LinksTable() {
             </tr>
           </thead>
           <tbody>
-            {loading &&
-              Array.from({ length: 4 }).map((_, i) => (
-                <tr key={i} className="border-b border-neutral-50">
-                  <td colSpan={columns.length + 2} className="px-4 py-3">
-                    <div className="h-8 rounded-md bg-neutral-100 animate-pulse" />
-                  </td>
-                </tr>
-              ))}
+            {loading && (
+              <tr className="border-b border-neutral-50">
+                <td colSpan={columns.length + 2} className="px-4 py-10">
+                  <div className="flex items-center justify-center">
+                    <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+                      <Spinner className="size-5 text-neutral-500" />
+                      <p className="text-sm font-medium text-neutral-600">Loading your links...</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            )}
 
             {!loading && filtered.length === 0 && (
               <tr>

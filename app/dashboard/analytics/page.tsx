@@ -2,6 +2,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import { useEffect, useMemo, useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import AnalyticsChartComponent from "@/components/dashboard/main/AnalyticsChart";
 import {
   FiBarChart2,
@@ -654,11 +655,11 @@ export default function AnalyticsPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-16">
-            <div className="inline-block animate-spin text-neutral-400">
-              <FiBarChart2 size={28} />
+          <div className="flex items-center justify-center py-16">
+            <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+              <Spinner className="size-5 text-neutral-500" />
+              <p className="text-sm font-medium text-neutral-600">Loading analytics...</p>
             </div>
-            <p className="mt-4 text-sm text-neutral-500">Loading analytics...</p>
           </div>
         ) : (
           <>

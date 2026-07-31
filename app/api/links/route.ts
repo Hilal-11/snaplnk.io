@@ -85,9 +85,13 @@ export async function POST(request: NextRequest) {
   }
 
   const finalDomain =
-  process.env.NODE_ENV === "production" ? "snaplnk.io" : "localhost:3000";
-  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  const shortUrl = `${protocol}://${finalDomain}/${finalShortCode}`;
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_BASE_URL ??
+    process.env.VERCEL_URL ??
+    "localhost:3000";
+  const domainNoProtocol = finalDomain.replace(/^https?:\/\//, "");
+  const protocol = finalDomain.startsWith("https") ? "https" : "http";
+  const shortUrl = `${protocol}://${domainNoProtocol}/${finalShortCode}`;
   
   let qrCodeUrl = "";
   let qrCodePublicId = "";

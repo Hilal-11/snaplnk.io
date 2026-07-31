@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { FiTrendingUp } from "react-icons/fi";
+import { Spinner } from "@/components/ui/spinner";
 
 interface DailyPoint {
   click_date: string;
@@ -70,7 +71,12 @@ export default function AnalyticsChart() {
 
       <div className="h-64 mt-4">
         {loading ? (
-          <div className="w-full h-full rounded-lg bg-neutral-100 animate-pulse" />
+          <div className="w-full h-full flex items-center justify-center rounded-lg bg-neutral-50/50 border border-dashed border-neutral-200">
+            <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+              <Spinner className="size-5 text-neutral-500" />
+              <p className="text-sm font-medium text-neutral-600">Loading chart...</p>
+            </div>
+          </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
