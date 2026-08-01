@@ -46,7 +46,8 @@ export default function HeaderAuthSection() {
     return <div className="w-24 h-8 rounded-md bg-neutral-100 animate-pulse" />;
   }
 
-  if (!user) {
+  // Anonymous (guest) users are treated as signed out on the landing page
+  if (!user || user.is_anonymous) {
     return (
       <Link
         href="/signup"

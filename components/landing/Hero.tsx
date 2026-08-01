@@ -26,6 +26,21 @@ export default function Hero() {
 
     setLoading(true);
     try {
+      // Guests can create links too — sign in anonymously first so the
+      // link gets saved to a real account they can claim later.
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        const { error: anonError } = await supabase.auth.signInAnonymously();
+        if (anonError) {
+          setError("Guest links are unavailable right now — please sign up and try again.");
+          return;
+        }
+      }
+
       const res = await fetch("/api/links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -257,6 +272,7 @@ function InlineBadge({
 
 
 import { cn } from "@/lib/utils"
+import { createClient } from "@/lib/supabase/client"
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern"
 import Image from 'next/image'
 import Link from 'next/link'
