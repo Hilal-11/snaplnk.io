@@ -12,7 +12,7 @@ export const HEADER_CONFIG:HeaderConfig[] = [
     {
         id: 123,
         header_title: "FAQ's",
-        link: "/faq"
+        link: "/faqs"
     },
     {
         id: 23,
@@ -22,7 +22,7 @@ export const HEADER_CONFIG:HeaderConfig[] = [
     {
         id: 11,
         header_title: "API's",
-        link: "/docs"
+        link: "/"
     },
     {
         id: 422,

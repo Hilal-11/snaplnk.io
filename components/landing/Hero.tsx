@@ -212,7 +212,7 @@ export default function Hero() {
       <div className="lg:mt-22 mt-12 p-2 lg:p-5 max-w-7xl mx-auto h-auto lg:h-170 rounded-3xl border border-neutral-300/70 bg-gradient-to-br from-neutral-50 to-neutral-100 overflow-hidden mask-b-from-40% mask-b-to-100% shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
         <div className="relative w-full h-full border bg-white/90 border-black/20 rounded-2xl shadow-lg overflow-hidden">
         <video
-            src="https://keep-khaki-eta.vercel.app/assets/keepVideo.mp4"
+            src="/snaplnk.mp4"
             autoPlay
             loop
             muted
