@@ -1,4 +1,4 @@
-# Snaplnk.io
+# Snaplnk.io (URL-Shortener for free with analytics)
 
 **A fast, modern URL shortener with QR code generation, click analytics, and a clean dashboard.** Built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, and Supabase.
 
