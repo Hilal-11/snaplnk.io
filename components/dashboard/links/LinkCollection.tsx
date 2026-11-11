@@ -4,6 +4,7 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { FiAlertCircle, FiEyeOff, FiLink, FiTag, FiTrash2, FiX, FiEye } from "react-icons/fi";
 import { TbQrcode } from "react-icons/tb";
+import { AnimatePresence, motion } from "motion/react";
 import LinkCard, { type LinkCardHandlers } from "./LinkCard";
 import { ConfirmDialog, EditLinkDialog, LinkDetailsDialog, QrPreviewDialog } from "./LinkDialogs";
 import { CreateButton, PageTitle, SearchInput, ViewToggle } from "./CollectionToolbar";
@@ -190,22 +191,38 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 mb-5">
-        {FILTERS.map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-              filter === f.key
-                ? "bg-neutral-900 text-white"
-                : "bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-300"
-            }`}
-          >
-            {f.label}
-            {!loading && (
-              <span className={filter === f.key ? "text-neutral-300" : "text-neutral-400"}>{counts[f.key]}</span>
-            )}
-          </button>
-        ))}
+        <div className="flex flex-wrap items-center gap-1 rounded-xl border border-neutral-200 bg-white p-1">
+          {FILTERS.map((f) => {
+            const active = filter === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  active ? "text-white" : "text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100"
+                }`}
+              >
+                {active && (
+                  <motion.span
+                    layoutId={`filter-pill-${variant}`}
+                    className="absolute inset-0 rounded-lg btn-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                  />
+                )}
+                <span className="relative z-10">{f.label}</span>
+                {!loading && (
+                  <span
+                    className={`relative z-10 tabular-nums rounded px-1 text-[10px] ${
+                      active ? "bg-brand text-white" : "bg-neutral-100 text-neutral-500"
+                    }`}
+                  >
+                    {counts[f.key]}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
         {tagFilter && (
           <span className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1.5 rounded-lg bg-blue-50 border border-blue-100 text-xs font-semibold text-blue-700">
             <FiTag size={12} /> {tagFilter}
@@ -220,7 +237,7 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
               type="checkbox"
               checked={allSelected}
               onChange={() => setSelected(allSelected ? new Set() : new Set(visible.map((l) => l.id)))}
-              className="w-4 h-4 rounded accent-neutral-900"
+              className="w-4 h-4 rounded accent-[var(--brand)]"
             />
             Select all
           </label>
@@ -228,9 +245,26 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
       </div>
 
       {/* Bulk bar */}
+      <AnimatePresence>
       {selectedLinks.length > 0 && (
-        <div className="sticky top-2 lg:top-20 z-20 mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-neutral-900 text-white px-4 py-2.5 shadow-lg animate-in fade-in slide-in-from-top-1">
-          <span className="text-sm font-semibold mr-2">{selectedLinks.length} selected</span>
+        <motion.div
+          initial={{ opacity: 0, y: -8, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -8, scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 420, damping: 32 }}
+          className="sticky top-2 lg:top-20 z-20 mb-4 flex flex-wrap items-center gap-2 rounded-xl btn-primary text-white px-4 py-2.5 shadow-lg"
+        >
+          <span className="flex items-center gap-2 text-sm font-semibold mr-2">
+            <motion.span
+              key={selectedLinks.length}
+              initial={{ scale: 0.6 }}
+              animate={{ scale: 1 }}
+              className="inline-flex min-w-6 h-6 items-center justify-center rounded-md bg-brand px-1.5 text-xs text-white tabular-nums"
+            >
+              {selectedLinks.length}
+            </motion.span>
+            selected
+          </span>
           <button
             onClick={bulkToggleHidden}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold hover:bg-white/10"
@@ -239,7 +273,7 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
           </button>
           <button
             onClick={() => setDeleting(selectedLinks)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-red-300 hover:bg-white/10"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold text-red-400 dark:text-[oklch(0.5_0.2_25)] hover:bg-white/10"
           >
             <FiTrash2 size={13} /> Delete
           </button>
@@ -250,8 +284,9 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
           >
             <FiX size={14} />
           </button>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Content */}
       {loading ? (
@@ -267,8 +302,10 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
           <p className="text-neutral-700 font-semibold text-sm">{error}</p>
         </div>
       ) : visible.length === 0 ? (
-        <div className="bg-white border border-dashed border-neutral-300 rounded-2xl p-14 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-neutral-900 flex items-center justify-center mx-auto mb-4">
+        <div className="relative isolate overflow-hidden bg-white border border-dashed border-neutral-300 rounded-2xl p-14 text-center">
+          <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-grid mask-fade-radial" />
+          <div className="relative w-14 h-14 rounded-2xl btn-primary flex items-center justify-center mx-auto mb-4 -rotate-3">
+            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-brand ring-2 ring-white" />
             <Empty size={24} className="text-white" />
           </div>
           <h3 className="text-base font-semibold text-neutral-900 mb-1">
@@ -284,19 +321,34 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
           )}
         </div>
       ) : (
-        <div className={GRID_CLASS[view]}>
-          {visible.map((link) => (
-            <LinkCard
-              key={link.id}
-              link={link}
-              variant={variant}
-              view={view}
-              selected={selected.has(link.id)}
-              onSelect={toggleSelect}
-              handlers={handlers}
-            />
-          ))}
-        </div>
+        <motion.div layout className={GRID_CLASS[view]}>
+          <AnimatePresence initial={true} mode="popLayout">
+            {visible.map((link, i) => (
+              <motion.div
+                key={link.id}
+                layout
+                className="h-full"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{
+                  layout: { type: "spring", stiffness: 380, damping: 36 },
+                  opacity: { duration: 0.22, delay: Math.min(i, 12) * 0.03 },
+                  y: { duration: 0.28, delay: Math.min(i, 12) * 0.03, ease: [0.2, 0.8, 0.2, 1] },
+                }}
+              >
+                <LinkCard
+                  link={link}
+                  variant={variant}
+                  view={view}
+                  selected={selected.has(link.id)}
+                  onSelect={toggleSelect}
+                  handlers={handlers}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
 
       {/* Dialogs */}

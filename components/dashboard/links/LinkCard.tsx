@@ -55,9 +55,9 @@ function IconAction({
   children: React.ReactNode;
   small?: boolean;
 }) {
-  const cls = `${small ? "w-8 h-8" : "w-9 h-9"} flex items-center justify-center rounded-lg text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 transition-colors`;
+  const cls = `${small ? "w-8 h-8" : "w-9 h-9"} flex items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 transition-[background-color,color,transform] duration-150 hover:-translate-y-px active:translate-y-0 active:scale-90 [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:scale-110`;
   const tip = (
-    <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1.5 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 group-hover/act:opacity-100 transition-opacity z-20">
+    <span className="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 mt-1 translate-y-1 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 scale-95 group-hover/act:opacity-100 group-hover/act:translate-y-0 group-hover/act:scale-100 transition-all duration-150 delay-150 group-hover/act:delay-300 z-20 shadow-lg">
       {label}
     </span>
   );
@@ -197,7 +197,7 @@ export default function LinkCard({
       checked={selected}
       onChange={() => onSelect(link.id)}
       aria-label={`Select ${displayTitle(link)}`}
-      className="mt-1 w-4 h-4 shrink-0 rounded border-neutral-300 accent-neutral-900 cursor-pointer"
+      className="mt-1 w-4 h-4 shrink-0 rounded border-neutral-300 accent-[var(--brand)] cursor-pointer transition-transform active:scale-90"
     />
   );
 
@@ -290,7 +290,7 @@ export default function LinkCard({
   const titleEl = (
     <button
       onClick={() => handlers.onDetails(link)}
-      className={`text-left font-bold text-neutral-900 hover:underline truncate max-w-full ${
+      className={`text-left font-bold text-neutral-900 hover:underline decoration-brand decoration-2 underline-offset-4 truncate max-w-full ${
         compact ? "text-[15px]" : "text-[17px]"
       }`}
     >
@@ -300,8 +300,8 @@ export default function LinkCard({
 
   const cardBase = `group relative bg-white rounded-xl border transition-all ${
     selected
-      ? "border-neutral-900 ring-1 ring-neutral-900"
-      : "border-neutral-200/80 hover:border-neutral-300 hover:shadow-[0px_4px_16px_-4px_rgba(0,0,0,0.08)]"
+      ? "border-brand ring-2 ring-brand/25 bg-brand-soft/30"
+      : "border-neutral-200/80 hover:border-neutral-300 hover:shadow-[0px_10px_28px_-14px_rgba(0,0,0,0.22)]"
   } ${status === "hidden" || status === "disabled" ? "opacity-80" : ""}`;
 
   if (isList) {

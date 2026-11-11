@@ -29,7 +29,8 @@ import {
   Cell,
 } from "recharts";
 
-const BAR_COLORS = ["#171717", "#404040", "#666666", "#8c8c8c", "#b3b3b3", "#d4d4d4"];
+// Monochrome ramp drawn with currentColor so it follows the theme (ink on light, light on dark)
+const BAR_OPACITY = [1, 0.78, 0.6, 0.45, 0.32, 0.22];
 
 const RANGE_OPTIONS = [
   { key: "7d", label: "Last 7 days" },
@@ -285,7 +286,7 @@ function DeviceBreakdown({ events }: { events: ClickEvent[] }) {
             />
             <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28} minPointSize={4}>
               {chartData.map((_, idx) => (
-                <Cell key={idx} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
+                <Cell key={idx} fill="currentColor" fillOpacity={BAR_OPACITY[idx % BAR_OPACITY.length]} />
               ))}
             </Bar>
           </BarChart>
@@ -340,7 +341,7 @@ function CountryBreakdown({ events }: { events: ClickEvent[] }) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {data.map((d, idx) => {
           const pct = Math.round((d.value / total) * 100);
-          const barColor = BAR_COLORS[idx % BAR_COLORS.length];
+          const barOpacity = BAR_OPACITY[idx % BAR_OPACITY.length];
           return (
             <div
               key={d.name}
@@ -358,7 +359,7 @@ function CountryBreakdown({ events }: { events: ClickEvent[] }) {
               <div className="w-full mt-2 h-1 rounded-full bg-neutral-200 overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all"
-                  style={{ width: `${pct}%`, backgroundColor: barColor }}
+                  style={{ width: `${pct}%`, backgroundColor: "currentColor", opacity: barOpacity }}
                 />
               </div>
               <p className="text-[11px] text-neutral-500 mt-1">{pct}% of clicks</p>
@@ -405,8 +406,8 @@ function HourlyActivity({ events }: { events: ClickEvent[] }) {
           <AreaChart data={data}>
             <defs>
               <linearGradient id="hourlyGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#171717" stopOpacity={0.12} />
-                <stop offset="100%" stopColor="#171717" stopOpacity={0} />
+                <stop offset="0%" stopColor="currentColor" stopOpacity={0.12} />
+                <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} stroke="#f5f5f5" />
@@ -434,7 +435,7 @@ function HourlyActivity({ events }: { events: ClickEvent[] }) {
             <Area
               type="monotone"
               dataKey="count"
-              stroke="#171717"
+              stroke="currentColor"
               strokeWidth={2}
               fill="url(#hourlyGradient)"
             />
@@ -503,7 +504,7 @@ function BrowserBreakdown({ events }: { events: ClickEvent[] }) {
             />
             <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20}>
               {data.map((_, idx) => (
-                <Cell key={idx} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
+                <Cell key={idx} fill="currentColor" fillOpacity={BAR_OPACITY[idx % BAR_OPACITY.length]} />
               ))}
             </Bar>
           </BarChart>
@@ -515,7 +516,7 @@ function BrowserBreakdown({ events }: { events: ClickEvent[] }) {
           <div key={d.name} className="flex items-center gap-1.5">
             <span
               className="w-2 h-2 rounded-full shrink-0"
-              style={{ backgroundColor: BAR_COLORS[idx % BAR_COLORS.length] }}
+              style={{ backgroundColor: "currentColor", opacity: BAR_OPACITY[idx % BAR_OPACITY.length] }}
             />
             <span className="text-xs text-neutral-600">{d.name}</span>
             <span className="text-xs font-semibold text-neutral-900">
@@ -562,8 +563,8 @@ function LinkDailyChart({ events, days }: { events: ClickEvent[]; days: number }
           <AreaChart data={data}>
             <defs>
               <linearGradient id="linkDailyGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#171717" stopOpacity={0.12} />
-                <stop offset="100%" stopColor="#171717" stopOpacity={0} />
+                <stop offset="0%" stopColor="currentColor" stopOpacity={0.12} />
+                <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} stroke="#f5f5f5" />
@@ -572,7 +573,7 @@ function LinkDailyChart({ events, days }: { events: ClickEvent[]; days: number }
             <Tooltip
               contentStyle={{ borderRadius: 8, border: "1px solid #e5e5e5", fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
             />
-            <Area type="monotone" dataKey="count" name="Clicks" stroke="#171717" strokeWidth={2} fill="url(#linkDailyGradient)" />
+            <Area type="monotone" dataKey="count" name="Clicks" stroke="currentColor" strokeWidth={2} fill="url(#linkDailyGradient)" />
           </AreaChart>
         </ResponsiveContainer>
       </div>

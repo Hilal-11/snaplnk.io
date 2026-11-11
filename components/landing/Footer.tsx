@@ -1,9 +1,9 @@
+import Logo from "@/components/Logo";
 import React from 'react'
 import { FaGithub, FaLinkedin, FaInstagram, FaGlobe } from "react-icons/fa";
 import { SiLeetcode, SiX } from "react-icons/si";
 import { FiLink, FiBarChart2, FiGrid, FiHome, FiShield } from "react-icons/fi";
 import Link from "next/link"
-import Image from 'next/image';
 export default function Footer() {
   return (
     <footer className="relative border-t border-neutral-200 bg-white mt-20 h-90">
@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
           {/* Left: Brand + tagline */}
           <div className="text-center lg:text-left flex gap-2 items-center">
-            <Image src="/snaplinklogolight.svg" alt="alt" width={30} height={30} />
+            <Logo size={30} />
             <p className="text-2xl font-semibold text-neutral-800">Snaplnk.io</p>
           </div>
 

@@ -81,13 +81,16 @@ export default function CreateChooserDialog({ open, onClose }: { open: boolean; 
           <button
             key={o.href}
             onClick={() => go(o.href)}
-            className="group text-left rounded-xl border border-neutral-200 bg-white p-4 hover:border-neutral-900 hover:shadow-[0px_8px_24px_-8px_rgba(0,0,0,0.15)] transition-all flex flex-col"
+            className="group text-left rounded-xl border border-neutral-200 bg-white p-4 hover:border-brand/60 hover:shadow-[0px_12px_28px_-12px_var(--brand-glow)] hover-lift active:scale-[0.98] flex flex-col"
           >
-            <div className="h-24 rounded-lg bg-neutral-50 border border-neutral-100 flex items-center justify-center px-3 mb-4 group-hover:bg-neutral-100 transition-colors">
+            <div className="relative isolate overflow-hidden h-24 rounded-lg bg-neutral-50 border border-neutral-100 flex items-center justify-center px-3 mb-4 transition-colors group-hover:bg-neutral-100">
+              <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-grid mask-fade-radial" />
+              <span className="transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-rotate-2">
               {o.preview}
+              </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-neutral-900 text-white flex items-center justify-center">
+              <span className="w-8 h-8 rounded-lg btn-primary flex items-center justify-center">
                 <o.icon size={15} />
               </span>
               <p className="text-sm font-semibold text-neutral-900">{o.title}</p>
@@ -96,7 +99,7 @@ export default function CreateChooserDialog({ open, onClose }: { open: boolean; 
               </kbd>
             </div>
             <p className="text-xs text-neutral-500 mt-2 leading-relaxed">{o.description}</p>
-            <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-neutral-900 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-brand opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">
               Get started <FiArrowRight size={12} />
             </span>
           </button>

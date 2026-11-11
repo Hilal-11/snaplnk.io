@@ -1,10 +1,10 @@
 "use client";
 
+import Logo from "@/components/Logo";
 import React, { useState, useEffect } from "react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { HEADER_CONFIG } from "@/config/headerConfig";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "motion/react";
 import SnapLnkButton from "../SnaplnkButton";
 import HeaderAuthSection from "./HeaderAuthSection";
@@ -35,7 +35,7 @@ export default function Header() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 select-none">
-              <Image src={'/snaplinklogolight.svg'} alt="Keep logo" width={32} height={32} />
+              <Logo size={32} />
             </Link>
 
             {/* Desktop nav */}
@@ -79,7 +79,7 @@ export default function Header() {
 
       {/* Backdrop — pure CSS, no Framer Motion, no z-index conflicts */}
       <div
-        className="fixed inset-0 z-[9990] bg-black/10 backdrop-blur-[2px] md:hidden transition-opacity duration-200"
+        className="fixed inset-0 z-[9990] bg-[oklch(0_0_0/0.25)] backdrop-blur-[2px] md:hidden transition-opacity duration-200"
         style={{
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? "auto" : "none",
