@@ -1,0 +1,32 @@
+// lib/constants/linkColumns.ts
+// Explicit column list so `password_hash` is NEVER sent to the client.
+// Reuse this in /api/links/[linkId] too.
+export const PUBLIC_LINK_COLUMNS = [
+  "id",
+  "owner",
+  "title",
+  "original_url",
+  "short_code",
+  "domain",
+  "is_custom_alias",
+  "qr_code_url",
+  "qr_code_public_id",
+  "favicon_url",
+  "clicks_count",
+  "unique_clicks_count",
+  "tags",
+  "is_active",
+  "is_deleted",
+  "archived_link",
+  "expires_at",
+  "max_clicks",
+  "is_password_protected",
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "created_at",
+  "updated_at",
+  "archived_at",
+  "deleted_at",
+  "last_clicked_at",
+].join(", ");

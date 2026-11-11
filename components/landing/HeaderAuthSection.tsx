@@ -23,13 +23,17 @@ export default function HeaderAuthSection() {
   const supabase = createClient();
 
   useEffect(() => {
+    // A guest (anonymous) user has a session but is NOT logged in
+    const toRealUser = (u: User | null | undefined) =>
+      u && !u.is_anonymous ? u : null;
+
     supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+      setUser(toRealUser(data.user));
       setLoading(false);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      setUser(toRealUser(session?.user));
     });
 
     return () => listener.subscription.unsubscribe();
@@ -46,8 +50,7 @@ export default function HeaderAuthSection() {
     return <div className="w-24 h-8 rounded-md bg-neutral-100 animate-pulse" />;
   }
 
-  // Anonymous (guest) users are treated as signed out on the landing page
-  if (!user || user.is_anonymous) {
+  if (!user) {
     return (
       <Link
         href="/signup"

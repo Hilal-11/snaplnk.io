@@ -36,7 +36,12 @@ export default function Hero() {
       if (!user) {
         const { error: anonError } = await supabase.auth.signInAnonymously();
         if (anonError) {
-          setError("Guest links are unavailable right now — please sign up and try again.");
+          console.error("Anonymous sign-in failed:", {
+            message: anonError.message,
+            status: anonError.status,
+            code: anonError.code,
+          });
+          setError(`Guest links unavailable: ${anonError.message}`);
           return;
         }
       }
@@ -49,6 +54,10 @@ export default function Hero() {
 
       const json = await res.json();
 
+      if (!res.ok) {
+        setError(json.error ?? "Something went wrong.");
+        return;
+      }
       if (!json.data?.short_code) {
         setError("Something went wrong — no short code returned.");
         return;
@@ -62,6 +71,8 @@ export default function Hero() {
       setLoading(false);
     }
   }
+
+  
   return (
     <div className="container ">
     <section className="relative font-sans w-full overflow-hidden px-4 lg:pt-12">
