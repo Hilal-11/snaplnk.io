@@ -91,7 +91,7 @@ export default function BioPageBuilder() {
           </FormField>
           <button
             disabled
-            className="w-full rounded-lg bg-black text-white text-sm font-semibold py-3 opacity-40 cursor-not-allowed"
+            className="w-full rounded-lg btn-primary text-white text-sm font-semibold py-3 opacity-40 cursor-not-allowed"
           >
             Publish bio page — coming soon
           </button>

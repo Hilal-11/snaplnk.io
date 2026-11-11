@@ -47,7 +47,7 @@ export default function Feedback() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-neutral-800 transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg btn-primary text-white text-sm font-medium"
       >
         <MdOutlineFeedback className="text-[14px]" />
         Feedback
@@ -143,7 +143,7 @@ async function handleSubmit() {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-[oklch(0_0_0/0.40)] backdrop-blur-sm"
         onClick={onClose}
       />
 
@@ -273,7 +273,7 @@ async function handleSubmit() {
               <button
                 onClick={handleSubmit}
                 disabled={!canSubmit}
-                className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-black text-white text-[14px] font-medium hover:bg-neutral-800 disabled:opacity-40 disabled:hover:bg-black transition-colors"
+                className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full btn-primary text-white text-[14px] font-medium disabled:opacity-40"
               >
                 {state === "submitting" ? (
                   <>

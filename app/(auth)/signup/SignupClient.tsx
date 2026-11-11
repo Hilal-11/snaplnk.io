@@ -1,5 +1,6 @@
 'use client'
 
+import Logo from "@/components/Logo";
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import Link from 'next/link'
@@ -193,7 +194,7 @@ if (result && 'success' in result) setMessage({ type: 'success', text: result.su
                   href="/"
                   className="inline-flex items-center gap-2 text-neutral-900 dark:text-neutral-100 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
                 >
-                  <Image src={'/snaplinklogolight.svg'} width={100} height={100} alt={"snaplnk.io"} className="lg:w-18 lg:h-18 w-12 h-12"></Image>
+                  <Logo size={100} className="lg:w-18 lg:h-18 w-12 h-12" />
                   <span className="text-[40px] lg:text-7xl font-bold tracking-tight font-sans">
                     Snaplnk<span className="bg-gradient-to-r from-[#F64C18] to-[#EE9539] bg-clip-text text-transparent">.io</span>
                   </span>

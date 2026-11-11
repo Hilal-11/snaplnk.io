@@ -1,5 +1,6 @@
 "use client";
 
+import Logo from "@/components/Logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -26,7 +27,7 @@ import { TiDocumentText } from "react-icons/ti";
 import { TbQrcode } from "react-icons/tb";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import UserMenu from "./UserMenu";
-import Image from "next/image";
+import { motion } from "motion/react";
 
 const navGroups = [
   {
@@ -73,18 +74,29 @@ const ExternalPages = [
   },
 ]
 
+
 export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
   const pathname = usePathname();
+  // Separate layout ids so the desktop and mobile instances never animate into each other.
+  const pillId = mobile ? "sidebar-pill-mobile" : "sidebar-pill";
 
   return (
-    <aside className={`font-sans flex-col w-68 scrollbar-hide h-screen sticky top-0 border-r border-neutral-200/80 bg-white ${
+    <aside
+      className={`font-sans flex-col w-68 scrollbar-hide h-screen sticky top-0 border-r border-neutral-200/80 bg-white ${
         mobile ? "flex" : "hidden lg:flex"
-      }`}>
+      }`}
+    >
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 px-5 h-16 border-b border-neutral-200/70">
-        <Image src={"/snaplinklogolight.svg"} width={30} height={30} alt={"snaplnk.io"} />
-        <span className="font-semibold text-lg text-gray-900 tracking-tight">
-          Snaplnk.io
+      <Link
+        href="/"
+        className="group relative flex items-center gap-2 px-5 h-16 border-b border-neutral-200/70 overflow-hidden"
+      >
+        <span className="pointer-events-none absolute inset-0 bg-dots mask-fade-radial opacity-70" />
+        <span className="relative transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105">
+          <Logo size={30} />
+        </span>
+        <span className="relative font-semibold text-lg text-neutral-900 tracking-tight">
+          Snaplnk<span className="text-brand">.</span>io
         </span>
       </Link>
 
@@ -92,10 +104,11 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
       <nav className="flex-1 scrollbar-hide overflow-y-auto px-3 py-4 space-y-6">
         {navGroups.map((group) => (
           <div key={group.label}>
-            <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+            <p className="flex items-center gap-1.5 px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+              <span className="h-px w-2 bg-neutral-300" />
               {group.label}
             </p>
-            <ul className="">
+            <ul className="space-y-0.5">
               {group.items.map((item) => {
                 const isActive =
                   pathname === item.href ||
@@ -107,7 +120,9 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
                       <span className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-neutral-400 cursor-not-allowed select-none">
                         <Icon className="text-[15px] text-neutral-300" />
                         {item.label}
-                        <span className="ml-auto text-[10px] font-semibold text-neutral-300 bg-neutral-100 rounded-full px-1.5 py-0.5">Soon</span>
+                        <span className="ml-auto text-[10px] font-semibold text-neutral-400 bg-neutral-100 rounded-md px-1.5 py-0.5">
+                          Soon
+                        </span>
                       </span>
                     </li>
                   );
@@ -116,18 +131,34 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
-                        isActive
-                          ? "bg-black text-white"
-                          : "text-neutral-800 hover:bg-neutral-100 hover:text-neutral-950"
+                      aria-current={isActive ? "page" : undefined}
+                      className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
+                        isActive ? "text-white" : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950"
                       }`}
                     >
+                      {isActive && (
+                        <motion.span
+                          layoutId={pillId}
+                          className="absolute inset-0 rounded-lg btn-primary"
+                          transition={{ type: "spring", stiffness: 480, damping: 38 }}
+                        />
+                      )}
                       <Icon
-                        className={`text-[15px] ${
-                          isActive ? "text-white" : "text-neutral-800"
+                        className={`relative z-10 text-[15px] transition-transform duration-200 ease-out group-hover:scale-110 ${
+                          isActive ? "" : "text-neutral-500 group-hover:text-neutral-900 group-hover:-rotate-6"
                         }`}
                       />
-                      {item.label}
+                      <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-0.5">
+                        {item.label}
+                      </span>
+                      {isActive && (
+                        <motion.span
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.08 }}
+                          className="relative z-10 ml-auto h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--brand-glow)]"
+                        />
+                      )}
                     </Link>
                   </li>
                 );
@@ -135,40 +166,38 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
             </ul>
           </div>
         ))}
-        <div className="w-full h-auto bg-neutral-100 rounded-lg border border-neutral-300/50 py-3 px-2">
-          <ul className="">
-              {ExternalPages[0].items.map((pages) => {
-                const isActive = pathname === pages.href;
-                const Icon = pages.icon;
-                return (
-                  <li key={pages.href}>
-                    <Link
-                      href={pages.href}
-                      className={`relative w-full flex items-center gap-2.5 px-3 py-[5px] rounded-sm text-sm font-medium transition-colors duration-150 ${
-                        isActive
-                          ? "bg-black text-white"
-                          : "text-neutral-500 hover:bg-white hover:text-neutral-950"
-                      }`}
-                    >
-                      <Icon
-                        className={`text-[15px] ${
-                          isActive ? "text-white" : "text-neutral-500"
-                        }`}
-                      />
-                      {pages.label}
 
-                      <span className="absolute right-4"><HiOutlineExternalLink /></span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+        <div className="relative w-full h-auto overflow-hidden bg-neutral-100/70 rounded-lg border border-neutral-200 py-2 px-1.5">
+          <span className="pointer-events-none absolute inset-0 bg-grid mask-fade-b opacity-60" />
+          <ul className="relative">
+            {ExternalPages[0].items.map((pages) => {
+              const isActive = pathname === pages.href;
+              const Icon = pages.icon;
+              return (
+                <li key={pages.href}>
+                  <Link
+                    href={pages.href}
+                    className={`group relative w-full flex items-center gap-2.5 px-3 py-[5px] rounded-md text-sm font-medium transition-colors duration-150 ${
+                      isActive
+                        ? "btn-primary text-white"
+                        : "text-neutral-500 hover:bg-white hover:text-neutral-950 hover:shadow-[0_1px_2px_rgb(0_0_0/0.06)]"
+                    }`}
+                  >
+                    <Icon className={`text-[15px] ${isActive ? "text-white" : "text-neutral-500 group-hover:text-neutral-900"}`} />
+                    {pages.label}
+                    <span className="absolute right-3 text-neutral-400 transition-all duration-200 group-hover:text-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                      <HiOutlineExternalLink />
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-
       </nav>
 
       {/* User menu pinned to bottom */}
-      <div className="px-2 py-px">
+      <div className="px-2 py-1.5 border-t border-neutral-200/70">
         <UserMenu />
       </div>
     </aside>

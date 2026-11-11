@@ -142,7 +142,7 @@ export default function CommandPalette({
   return (
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-24 px-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
+      <div className="absolute inset-0 bg-[oklch(0_0_0/0.40)] backdrop-blur-[2px]" onClick={onClose} />
 
       {/* Panel */}
       <div className="relative w-full max-w-xl rounded-2xl bg-white shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_0px_0px_1px_rgba(0,0,0,0.05)] overflow-hidden">

@@ -1,9 +1,10 @@
 "use client";
 
+import Logo from "@/components/Logo";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Spinner } from "@/components/ui/spinner";
 import { getShortUrl, getShortUrlDisplay } from "@/lib/utils/getShortUrl";
 import {
@@ -67,10 +68,11 @@ export default function QuickCreate() {
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] mb-6">
-      {/* subtle dotted backdrop */}
+      {/* grid + a faint orange glow from the top */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid mask-fade-radial" />
       <div
         aria-hidden
-        className="absolute inset-0 opacity-[0.35] [background-image:radial-gradient(#d4d4d4_1px,transparent_1px)] [background-size:18px_18px] [mask-image:linear-gradient(to_bottom,black,transparent_75%)]"
+        className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] max-w-full -translate-x-1/2 rounded-full bg-brand opacity-[0.09] blur-3xl"
       />
       <div className="relative px-5 py-8 sm:px-10 sm:py-10">
         <div className="max-w-2xl mx-auto text-center">
@@ -89,18 +91,41 @@ export default function QuickCreate() {
                   setMode(m.key);
                   inputRef.current?.focus();
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
-                  mode === m.key ? "bg-white text-neutral-900 shadow-sm" : "text-neutral-500 hover:text-neutral-800"
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+                  mode === m.key ? "text-neutral-900" : "text-neutral-500 hover:text-neutral-800"
                 }`}
               >
-                <m.icon size={13} /> {m.label}
+                {mode === m.key && (
+                  <motion.span
+                    layoutId="quick-create-mode"
+                    className="absolute inset-0 rounded-md bg-white shadow-[0_1px_2px_rgb(0_0_0/0.1),0_0_0_1px_rgb(0_0_0/0.04)]"
+                    transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                  />
+                )}
+                <m.icon size={13} className={`relative z-10 ${mode === m.key ? "text-brand" : ""}`} />
+                <span className="relative z-10">{m.label}</span>
               </button>
             ))}
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">
-            {mode === "qr" ? "Turn any link into a QR code" : "Shorten a link in one click"}
-          </h2>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.h2
+              key={mode}
+              initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+              transition={{ duration: 0.2 }}
+              className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900"
+            >
+              {mode === "qr" ? "Turn any link into a " : "Shorten a link in "}
+              <span className="relative whitespace-nowrap bg-gradient-to-r from-[#F64C18] to-[#EE9539] bg-clip-text text-transparent">
+                {mode === "qr" ? "QR code" : "one click"}
+                <svg aria-hidden viewBox="0 0 120 8" className="absolute -bottom-1.5 left-0 w-full h-2 text-brand/70" preserveAspectRatio="none">
+                  <path d="M1 5.5C30 1.5 70 1.5 119 4.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+              </span>
+            </motion.h2>
+          </AnimatePresence>
           <p className="text-sm text-neutral-500 mt-2">
             {mode === "qr"
               ? "Paste a URL — we'll create a trackable short link and a downloadable QR code."
@@ -108,10 +133,10 @@ export default function QuickCreate() {
           </p>
 
           <form onSubmit={create} className="mt-6">
-            <div className="flex flex-col sm:flex-row items-stretch gap-2 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-sm focus-within:border-neutral-400 focus-within:shadow-md transition-all">
+            <div className="flex flex-col sm:flex-row items-stretch gap-2 rounded-xl border border-neutral-200 bg-white p-1.5 shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-neutral-300 focus-within:border-brand/60 focus-within:shadow-[0_0_0_4px_var(--brand-soft),0_8px_24px_-12px_rgb(0_0_0/0.25)]">
               <div className="flex items-center flex-1 min-w-0">
                 <span className="pl-2.5 pr-1.5 flex items-center">
-                  <Image src="/snaplinklogolight.svg" width={20} height={20} alt="" />
+                  <Logo size={20} alt="" />
                 </span>
                 <input
                   ref={inputRef}
@@ -125,7 +150,7 @@ export default function QuickCreate() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-black hover:bg-neutral-800 active:scale-[0.98] text-white text-sm font-semibold px-5 py-2.5 transition-all disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg btn-primary active:scale-[0.98] text-white text-sm font-semibold px-5 py-2.5 disabled:opacity-50"
               >
                 {loading ? (
                   <>

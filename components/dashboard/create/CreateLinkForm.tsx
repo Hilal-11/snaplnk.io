@@ -204,7 +204,7 @@ export default function CreateLinkForm({ variant, initialUrl = "" }: { variant: 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 rounded-lg bg-black hover:bg-neutral-800 active:scale-[0.99] text-white text-sm font-semibold py-3 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 rounded-lg btn-primary active:scale-[0.99] text-white text-sm font-semibold py-3 disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -360,7 +360,7 @@ function SuccessPanel({ link, variant, onReset }: { link: LinkItem; variant: Var
                 setBusy(false);
               }
             }}
-            className="mt-3 w-full flex items-center justify-center gap-1.5 rounded-lg bg-black hover:bg-neutral-800 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+            className="mt-3 w-full flex items-center justify-center gap-1.5 rounded-lg btn-primary px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
           >
             {busy ? <Spinner className="size-4" /> : <FiDownload size={14} />} Download PNG
           </button>
@@ -376,7 +376,7 @@ function SuccessPanel({ link, variant, onReset }: { link: LinkItem; variant: Var
         </button>
         <Link
           href={variant === "qr" ? "/dashboard/qr-codes" : "/dashboard/links"}
-          className="flex-1 text-center px-4 py-2.5 rounded-lg bg-black hover:bg-neutral-800 text-sm font-semibold text-white"
+          className="flex-1 text-center px-4 py-2.5 rounded-lg btn-primary text-sm font-semibold text-white"
         >
           {variant === "qr" ? "View all QR codes" : "View all links"}
         </Link>

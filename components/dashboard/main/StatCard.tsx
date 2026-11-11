@@ -44,7 +44,7 @@ export default function StatCard({
   const peakIndex = sparkline.indexOf(Math.max(...sparkline));
 
   return (
-    <div className="rounded-xl border border-neutral-200/80 bg-white p-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+    <div className="group hover-lift rounded-xl border border-neutral-200/80 bg-white p-5 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-medium text-neutral-500">{label}</p>
@@ -86,7 +86,8 @@ export default function StatCard({
               <Line
                 type="monotone"
                 dataKey="v"
-                stroke="#d4d4d4"
+                stroke="currentColor"
+                strokeOpacity={0.35}
                 strokeWidth={1.5}
                 dot={(props: any) =>
                   props.index === peakIndex ? (
@@ -95,8 +96,7 @@ export default function StatCard({
                       cx={props.cx}
                       cy={props.cy}
                       r={3}
-                      fill={isPositive ? "#f97316" : "#ef4444"}
-                      stroke="white"
+                      style={{ fill: isPositive ? "var(--brand)" : "#ef4444", stroke: "var(--color-white)" }}
                       strokeWidth={1.5}
                     />
                   ) : (

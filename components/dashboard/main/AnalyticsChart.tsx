@@ -69,7 +69,7 @@ export default function AnalyticsChart() {
         </span>
       </div>
 
-      <div className="h-64 mt-4">
+      <div className="h-64 mt-4 text-brand">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center rounded-lg bg-neutral-50/50 border border-dashed border-neutral-200">
             <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
@@ -82,8 +82,8 @@ export default function AnalyticsChart() {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="clickGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#000000" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="#000000" stopOpacity={0} />
+                  <stop offset="0%" stopColor="currentColor" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} stroke="#f0f0f0" />
@@ -106,7 +106,7 @@ export default function AnalyticsChart() {
               <Area
                 type="monotone"
                 dataKey="count"
-                stroke="#000000"
+                stroke="currentColor"
                 strokeWidth={2}
                 fill="url(#clickGradient)"
               />
