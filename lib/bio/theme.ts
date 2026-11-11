@@ -85,3 +85,19 @@ export function getThemeContrastIssues(theme: ThemeInput, required = WCAG_AA_NOR
   });
   return issues;
 }
+
+/** Theme for blank pages (same look as the "Minimal" template). */
+export const DEFAULT_THEME: ThemeInput = {
+  background: { type: "solid", color: "#fafafa" },
+  text: { color: "#111111", muted: "#525252", accent: "#111111" },
+  font: { heading: "inter", body: "inter" },
+  button: { style: "fill", radius: 12, bg: "#111111", fg: "#ffffff", border: "#111111" },
+  avatar: { shape: "circle" },
+  layout: { width: "narrow", spacing: "comfortable" },
+};
+
+/** Parses a stored theme, falling back to DEFAULT_THEME if it is missing or invalid. */
+export function parseThemeOrDefault(value: unknown): Theme {
+  const r = themeSchema.safeParse(value);
+  return r.success ? r.data : themeSchema.parse(DEFAULT_THEME);
+}

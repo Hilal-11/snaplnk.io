@@ -340,6 +340,51 @@ html.dark {
   stroke: var(--color-white);
 }
 
+/* =========================================================================
+   Bio pages (BioRenderer). Colours come from theme CSS variables on .bio-root;
+   nothing here is user-controlled.
+   ========================================================================= */
+.bio-root .bio-link {
+  color: var(--bio-btn-fg);
+  background: var(--bio-btn-bg);
+  border: 1px solid var(--bio-btn-border);
+  border-radius: var(--bio-btn-radius);
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms ease, filter 200ms ease;
+}
+.bio-root .bio-link:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
+.bio-root .bio-link:active {
+  transform: translateY(0) scale(0.98);
+}
+.bio-root .bio-link:focus-visible {
+  outline: 2px solid var(--bio-accent);
+  outline-offset: 3px;
+}
+.bio-root[data-button-style="outline"] .bio-link {
+  border-width: 2px;
+}
+.bio-root[data-button-style="soft"] .bio-link {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.bio-root[data-button-style="shadow"] .bio-link {
+  box-shadow: 0 4px 0 -1px rgb(0 0 0 / 0.14), 0 10px 24px -12px rgb(0 0 0 / 0.4);
+}
+.bio-root[data-button-style="shadow"] .bio-link:hover {
+  box-shadow: 0 6px 0 -1px rgb(0 0 0 / 0.14), 0 16px 30px -12px rgb(0 0 0 / 0.45);
+}
+.bio-root .bio-link[data-highlight] {
+  animation: bio-nudge 3.2s ease-in-out 1s infinite;
+}
+@keyframes bio-nudge {
+  0%, 86%, 100% { transform: none; }
+  89% { transform: rotate(-1.2deg) scale(1.02); }
+  92% { transform: rotate(1.2deg) scale(1.02); }
+  95% { transform: rotate(-0.6deg); }
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
