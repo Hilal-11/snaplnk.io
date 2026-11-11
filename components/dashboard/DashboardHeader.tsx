@@ -1,6 +1,5 @@
 // components/dashboard/DashboardHeader.tsx
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,7 +15,7 @@ import {
 } from "react-icons/fi";
 import { routeLabels } from "@/config/routeLabels";
 import CommandPalette from "./SearchBox";
-import CreateLinkDialog from "./CreateLinkDialog";
+import CreateChooserDialog from "./CreateChooserDialog";
 import { MdOutlineFeedback } from "react-icons/md";
 import Feedback from "./Feedback";
 import { AnimatePresence } from "motion/react";
@@ -27,6 +26,7 @@ export default function DashboardHeader() {
   const segments = pathname.split("/").filter(Boolean); // e.g. ["dashboard", "qr-codes"]
   const [createOpen, setCreateOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(true);
+  const closeCreate = () => setCreateOpen(false);
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -106,7 +106,7 @@ export default function DashboardHeader() {
         </div>
       </header>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
-      <CreateLinkDialog open={createOpen} onClose={() => setCreateOpen(false)} />
+      <CreateChooserDialog open={createOpen} onClose={closeCreate} />
     </>
   );
 }

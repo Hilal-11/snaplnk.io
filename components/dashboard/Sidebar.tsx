@@ -36,7 +36,7 @@ const navGroups = [
       { href: "/dashboard/links", label: "My Links", icon: FiLink },
       { href: "/dashboard/analytics", label: "Analytics", icon: FiBarChart2 },
       { href: "/dashboard/qr-codes", label: "QR Codes", icon: TbQrcode },
-      { href: "/dashboard/bio-pages", label: "Bio Pages", icon: FiUser, disabled: true },
+      { href: "/dashboard/bio-pages", label: "Bio Pages", icon: FiUser },
     ],
   },
   {
@@ -46,7 +46,7 @@ const navGroups = [
       { href: "/dashboard/expired", label: "Expired Links", icon: FiClock },
       { href: "/dashboard/deleted", label: "Deleted Links", icon: FiTrash2 },
       { href: "/dashboard/tags", label: "Tags", icon: FiTag },
-      { href: "/dashboard/domains", label: "Domains", icon: FiGlobe, disabled: true },
+      { href: "/dashboard/domains", label: "Domains", icon: FiGlobe },
     ],
   },
   {
@@ -97,7 +97,9 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
             </p>
             <ul className="">
               {group.items.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
                 const Icon = item.icon;
                 if (item.disabled) {
                   return (

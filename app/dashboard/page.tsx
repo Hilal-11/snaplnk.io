@@ -1,27 +1,23 @@
 import DashboardGreeting from "@/components/dashboard/main/DashboardGreeting";
-import StatsOverview from "@/components/dashboard/main/StatsOverview";
-import CreateLinkCard from "@/components/dashboard/main/CreateLinkCard";
-import AnalyticsChart from "@/components/dashboard/main/AnalyticsChart";
+import QuickCreate from "@/components/dashboard/main/QuickCreate";
+import FeatureGrid from "@/components/dashboard/main/FeatureGrid";
 import RecentLinksCard from "@/components/dashboard/main/RecentLinksCard";
-import LinksTable from "@/components/dashboard/main/LinksTable";
 
+// The home view stays focused on creating links. Stats and charts live on /dashboard/analytics.
 export default function DashboardPage() {
   return (
     <div>
       <DashboardGreeting />
-      <StatsOverview />
-      <CreateLinkCard />
+      <QuickCreate />
 
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 mb-6">
         <div className="lg:col-span-7">
-          <AnalyticsChart />
+          <FeatureGrid />
         </div>
         <div className="lg:col-span-3">
           <RecentLinksCard />
         </div>
       </div>
-
-      <LinksTable />
     </div>
   );
 }

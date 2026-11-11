@@ -48,7 +48,7 @@ export async function signInWithGithub() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: `${getURL()}/auth/callback?next=/dashboard/links`,
+      redirectTo: `${getURL()}/auth/callback?next=/dashboard`,
     },
   });
   if (error) return { error: error.message };
@@ -60,7 +60,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${getURL()}/auth/callback?next=/dashboard/links`,
+      redirectTo: `${getURL()}/auth/callback?next=/dashboard`,
     },
   });
   if (error) return { error: error.message };

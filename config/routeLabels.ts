@@ -15,4 +15,5 @@ export const routeLabels: Record<string, string> = {
   "api-keys": "API Keys",
   billing: "Billing",
   settings: "Settings",
+  new: "Create",
 };

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { getAccessRule } from "@/lib/bio/proxyRules";
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -26,6 +27,23 @@ export async function proxy(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
+  const isRealUser = !!user && !user.is_anonymous;
+
+  // Bio Pages / dashboard access (defense in depth — handlers re-check with requireRealUser)
+  const rule = getAccessRule(request.nextUrl.pathname, request.method);
+  if (rule === "real-user-api" && !isRealUser) {
+    return NextResponse.json(
+      { error: user ? "Sign in required" : "Unauthorized" },
+      { status: user ? 403 : 401 }
+    );
+  }
+  if (rule === "real-user-page" && !isRealUser) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signup";
+    url.search = "";
+    url.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(url);
+  }
 
   // Protected routes — redirect to login if not authenticated
   const protectedPaths = ["/templates/template"];
