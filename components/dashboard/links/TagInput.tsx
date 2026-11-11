@@ -33,7 +33,7 @@ export function TagInput({
           <button
             type="button"
             onClick={() => onChange(value.filter((t) => t !== tag))}
-            className="p-0.5 rounded text-neutral-400 hover:text-neutral-900"
+            className="p-0.5 rounded-md text-neutral-400 hover:text-neutral-900"
             aria-label={`Remove ${tag}`}
           >
             <FiX size={11} />
@@ -103,7 +103,7 @@ export function InlineTags({
           <button
             type="button"
             onClick={() => onChange(tags.filter((t) => t !== tag))}
-            className="opacity-0 group-hover/tag:opacity-100 focus:opacity-100 p-0.5 rounded text-neutral-400 hover:text-neutral-900 transition-opacity"
+            className="opacity-0 group-hover/tag:opacity-100 focus:opacity-100 p-0.5 rounded-md text-neutral-400 hover:text-neutral-900 transition-opacity"
             aria-label={`Remove tag ${tag}`}
           >
             <FiX size={10} />

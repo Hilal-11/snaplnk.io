@@ -54,7 +54,7 @@ export default function Header() {
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center gap-1">
               <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.97 }} className="relative inline-flex">
-                <span className="absolute inset-0 rounded-[10px] animate-[ping_2.4s_ease_infinite] ring-0 ring-yellow-400/50" />
+                <span className="absolute inset-0 rounded-lg animate-[ping_2.4s_ease_infinite] ring-0 ring-yellow-400/50" />
                 <SnapLnkButton text="Start for free"/>
               </motion.div>
               <HeaderAuthSection/> 

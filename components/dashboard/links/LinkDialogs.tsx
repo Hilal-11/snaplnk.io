@@ -333,7 +333,7 @@ export function LinkDetailsDialog({ link, onClose }: { link: LinkItem | null; on
                       setCopied(true);
                       setTimeout(() => setCopied(false), 1500);
                     }}
-                    className="p-1 rounded text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100"
+                    className="p-1 rounded-md text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100"
                     aria-label="Copy short link"
                   >
                     {copied ? <FiCheck size={13} className="text-emerald-600" /> : <FiCopy size={13} />}

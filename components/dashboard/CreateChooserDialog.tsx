@@ -43,9 +43,9 @@ const OPTIONS = [
     preview: (
       <div className="w-16 rounded-lg border border-neutral-200 bg-white p-1.5 flex flex-col items-center gap-1">
         <span className="w-4 h-4 rounded-full bg-neutral-900" />
-        <span className="w-full h-1.5 rounded bg-neutral-200" />
-        <span className="w-full h-1.5 rounded bg-neutral-200" />
-        <span className="w-full h-1.5 rounded bg-neutral-200" />
+        <span className="w-full h-1.5 rounded-md bg-neutral-200" />
+        <span className="w-full h-1.5 rounded-md bg-neutral-200" />
+        <span className="w-full h-1.5 rounded-md bg-neutral-200" />
       </div>
     ),
   },
@@ -94,7 +94,7 @@ export default function CreateChooserDialog({ open, onClose }: { open: boolean; 
                 <o.icon size={15} />
               </span>
               <p className="text-sm font-semibold text-neutral-900">{o.title}</p>
-              <kbd className="ml-auto rounded border border-neutral-200 bg-neutral-50 px-1.5 text-[10px] font-medium text-neutral-400">
+              <kbd className="ml-auto rounded-md border border-neutral-200 bg-neutral-50 px-1.5 text-[10px] font-medium text-neutral-400">
                 {o.key}
               </kbd>
             </div>

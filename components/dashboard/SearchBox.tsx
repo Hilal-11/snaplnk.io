@@ -167,7 +167,7 @@ export default function CommandPalette({
               <button
                 key={f.key}
                 onClick={() => setActiveFilter(f.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                   active
                     ? "bg-neutral-900 text-white border-neutral-900"
                     : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
@@ -219,7 +219,7 @@ export default function CommandPalette({
                             {item.label}
                           </span>
                           {item.shortcut && (
-                            <span className="flex items-center justify-center w-5 h-5 rounded border border-neutral-200 text-[10px] text-neutral-400">
+                            <span className="flex items-center justify-center w-5 h-5 rounded-md border border-neutral-200 text-[10px] text-neutral-400">
                               {item.shortcut}
                             </span>
                           )}
@@ -247,7 +247,7 @@ export default function CommandPalette({
             </span>
           </div>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 rounded border border-neutral-200 bg-white">Esc</kbd>
+            <kbd className="px-1.5 py-0.5 rounded-md border border-neutral-200 bg-white">Esc</kbd>
             Close
           </span>
         </div>

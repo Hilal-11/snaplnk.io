@@ -83,7 +83,7 @@ export default function DashboardHeader() {
           >
             <FiSearch className="text-sm transition-transform duration-200 group-hover:scale-110" />
             <span className="flex-1 text-left">Search...</span>
-            <kbd className="px-1.5 py-0.5 rounded border border-neutral-200 bg-white text-[10px] font-medium text-neutral-500 shadow-[0_1px_0_rgb(0_0_0/0.06)]">
+            <kbd className="px-1.5 py-0.5 rounded-md border border-neutral-200 bg-white text-[10px] font-medium text-neutral-500 shadow-[0_1px_0_rgb(0_0_0/0.06)]">
               ⌘K
             </kbd>
           </button>

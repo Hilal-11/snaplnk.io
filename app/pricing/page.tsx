@@ -157,7 +157,7 @@ export default function Page() {
               {/* plan label pill */}
               <div className="flex justify-center mb-8">
                 <span
-                  className={`inline-flex items-center gap-2 rounded-full bg-neutral-100 border border-neutral-200 pl-1.5 pr-4 py-1 ${cardShadow}`}
+                  className={`inline-flex items-center gap-2 rounded-lg bg-neutral-100 border border-neutral-200 pl-1.5 pr-4 py-1 ${cardShadow}`}
                 >
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-black flex-shrink-0">
                     <FiZap className="text-white text-[10px]" />

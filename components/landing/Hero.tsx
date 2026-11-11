@@ -99,7 +99,7 @@ export default function Hero() {
       {/* Top Badge */}
       <div className="flex justify-center mt-8 mb-10 ">
         <span className="relative inline-flex items-center gap-2 overflow-hidden
-            bg-neutral-100 border border-neutral-50 rounded-full
+            bg-neutral-100 border border-neutral-50 rounded-lg
             pl-2 pr-4 h-7.5 w-72 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
 
             {/* shimmer sweep */}
@@ -204,25 +204,25 @@ export default function Hero() {
 
       {/* Feature list */}
       <ul className="flex flex-wrap gap-x-0 gap-y-2 justify-center items-center text-xs font-semibold text-neutral-600">
-        <li className="flex items-center gap-1 bg-white rounded-full pl-1.5 pr-3">
+        <li className="flex items-center gap-1 bg-white rounded-lg pl-1.5 pr-3">
           <span className="flex items-center justify-center w-4 h-4 rounded-full bg-black flex-shrink-0">
             <FiEdit3 className="text-white text-[8px]" />
           </span>
           Customize your link
         </li>
-        <li className="flex items-center gap-1 bg-white rounded-full pl-1.5 pr-3 py-1.5">
+        <li className="flex items-center gap-1 bg-white rounded-lg pl-1.5 pr-3 py-1.5">
           <span className="flex items-center justify-center w-4 h-4 rounded-full bg-black flex-shrink-0">
             <IoInfiniteSharp className="text-white text-[8px]" />
           </span>
           Unlimited short links
         </li>
-        <li className="flex items-center gap-1 bg-white rounded-full pl-1.5 pr-3 py-1.5">
+        <li className="flex items-center gap-1 bg-white rounded-lg pl-1.5 pr-3 py-1.5">
           <span className="flex items-center justify-center w-4 h-4 rounded-full bg-black flex-shrink-0">
             <FiLink className="text-white text-[8px]" />
           </span>
           Custom alias links
         </li>
-        <li className="flex items-center gap-1 bg-white rounded-full pl-1.5 pr-3 py-1.5">
+        <li className="flex items-center gap-1 bg-white rounded-lg pl-1.5 pr-3 py-1.5">
           <span className="flex items-center justify-center w-4 h-4 rounded-full bg-black flex-shrink-0">
             <FiBarChart2 className="text-white text-[8px]" />
           </span>

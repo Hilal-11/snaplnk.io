@@ -153,7 +153,7 @@ function ProfileSettings() {
   if (loading)
     return (
       <div className="h-32 flex items-center justify-center">
-        <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+        <div className="flex items-center gap-3 rounded-lg border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
           <Spinner className="size-5 text-neutral-500" />
           <p className="text-sm font-medium text-neutral-600">Loading settings...</p>
         </div>
@@ -427,7 +427,7 @@ function TeamSettings() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-xs font-medium text-neutral-500 bg-neutral-100 rounded-full px-2.5 py-1">{m.role}</span>
+              <span className="text-xs font-medium text-neutral-500 bg-neutral-100 rounded-md px-2.5 py-1">{m.role}</span>
               {m.role !== "Owner" && (
                 <button className="p-1.5 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 transition" title="Remove"><FiX size={14} /></button>
               )}
@@ -449,7 +449,7 @@ function BillingSettings() {
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold text-neutral-500 bg-neutral-200 rounded-full px-2.5 py-0.5">FREE</span>
+              <span className="text-xs font-semibold text-neutral-500 bg-neutral-200 rounded-md px-2.5 py-0.5">FREE</span>
             </div>
             <p className="text-3xl font-bold text-neutral-900 tracking-tight mt-2">$0<span className="text-base font-medium text-neutral-400">/mo</span></p>
             <p className="text-sm text-neutral-500 mt-1">Free plan — 50 links, 10,000 clicks/mo</p>

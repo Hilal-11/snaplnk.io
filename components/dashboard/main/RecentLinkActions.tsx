@@ -81,7 +81,7 @@ function ActionButton({
       href={shortUrl}
       onClick={onClick}
       title={title}
-      className="p-1 rounded-sm border border-neutral-200 bg-white text-neutral-500 shadow-sm hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 active:scale-[0.97] transition-all duration-150 text-sm"
+      className="p-1 rounded-md border border-neutral-200 bg-white text-neutral-500 shadow-sm hover:bg-neutral-50 hover:border-neutral-300 hover:text-neutral-900 active:scale-[0.97] transition-all duration-150 text-sm"
     >
       {children}
     </Link>

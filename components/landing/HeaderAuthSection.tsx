@@ -70,7 +70,7 @@ export default function HeaderAuthSection() {
     <div className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-white hover:bg-neutral-50 transition-colors duration-150"
+        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-lg bg-white hover:bg-neutral-50 transition-colors duration-150"
       >
           <span className="flex items-center justify-center w-7 h-7 rounded-full bg-black text-white text-xs font-semibold">
             {initial}

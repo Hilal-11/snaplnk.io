@@ -212,7 +212,7 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
                 <span className="relative z-10">{f.label}</span>
                 {!loading && (
                   <span
-                    className={`relative z-10 tabular-nums rounded px-1 text-[10px] ${
+                    className={`relative z-10 tabular-nums rounded-md px-1 text-[10px] ${
                       active ? "bg-brand text-white" : "bg-neutral-100 text-neutral-500"
                     }`}
                   >
@@ -226,7 +226,7 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
         {tagFilter && (
           <span className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1.5 rounded-lg bg-blue-50 border border-blue-100 text-xs font-semibold text-blue-700">
             <FiTag size={12} /> {tagFilter}
-            <button onClick={() => setTagFilter(null)} aria-label="Clear tag filter" className="p-0.5 rounded hover:bg-blue-100">
+            <button onClick={() => setTagFilter(null)} aria-label="Clear tag filter" className="p-0.5 rounded-md hover:bg-blue-100">
               <FiX size={12} />
             </button>
           </span>
@@ -237,7 +237,7 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
               type="checkbox"
               checked={allSelected}
               onChange={() => setSelected(allSelected ? new Set() : new Set(visible.map((l) => l.id)))}
-              className="w-4 h-4 rounded accent-[var(--brand)]"
+              className="w-4 h-4 rounded-md accent-[var(--brand)]"
             />
             Select all
           </label>
@@ -291,7 +291,7 @@ export default function LinkCollection({ variant }: { variant: CardVariant }) {
       {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center gap-3 rounded-lg border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
             <Spinner className="size-5 text-neutral-500" />
             <p className="text-sm font-medium text-neutral-600">Loading your {copy.noun}s...</p>
           </div>

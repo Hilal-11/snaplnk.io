@@ -7,7 +7,7 @@ function SnapLnkButton({ text }: { text: string }) {
     <div>
       <Link
               href="/dashboard"
-              className="group relative flex items-center overflow-hidden w-full pl-[5px] py-[4px] rounded-[10px] btn-primary"
+              className="group relative flex items-center overflow-hidden w-full pl-[5px] py-[4px] rounded-lg btn-primary"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(105deg,transparent_30%,rgba(255,255,255,.35)_50%,transparent_70%)] group-hover:animate-[shimmer_.5s_ease_forwards]" />
                 <Logo size={24} alt="" inverse />

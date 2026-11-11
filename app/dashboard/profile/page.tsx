@@ -140,7 +140,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
-        <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+        <div className="flex items-center gap-3 rounded-lg border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
           <Spinner className="size-5 text-neutral-500" />
           <p className="text-sm font-medium text-neutral-600">Loading profile...</p>
         </div>
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                 ) : (
                   <div className="flex items-center gap-2">
                     <h1 className="text-xl font-bold text-white">{user?.name}</h1>
-                    <button onClick={() => setEditingName(true)} className="p-1 rounded text-white/50 hover:text-white hover:bg-white/10 transition" title="Edit name"><FiEdit2 size={13} /></button>
+                    <button onClick={() => setEditingName(true)} className="p-1 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition" title="Edit name"><FiEdit2 size={13} /></button>
                     {nameSaved && <span className="flex items-center gap-1 text-xs font-medium text-green-300"><FiCheckCircle size={12} /> Saved</span>}
                   </div>
                 )}

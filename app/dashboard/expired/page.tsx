@@ -196,7 +196,7 @@ function ExpiredRow({
               </span>
               <button
                 onClick={copyLink}
-                className="p-0.5 rounded text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition shrink-0"
+                className="p-0.5 rounded-md text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition shrink-0"
                 title="Copy link"
               >
                 {copied ? (
@@ -209,7 +209,7 @@ function ExpiredRow({
                 href={fullUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-0.5 rounded text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition shrink-0"
+                className="p-0.5 rounded-md text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition shrink-0"
                 title="Open link"
               >
                 <FiExternalLink size={12} />
@@ -234,7 +234,7 @@ function ExpiredRow({
             {link.tags.slice(0, 2).map((tag, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-600 bg-neutral-100 rounded-full px-2 py-0.5 whitespace-nowrap"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-600 bg-neutral-100 rounded-md px-2 py-0.5 whitespace-nowrap"
               >
                 <FiTag size={9} />
                 {tag}
@@ -352,7 +352,7 @@ export default function ExpiredPage() {
         </div>
 
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-full max-w-sm flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-4 py-2.5 shadow-sm">
+          <div className="w-full max-w-sm flex items-center gap-2 bg-white border border-neutral-200 rounded-lg px-4 py-2.5 shadow-sm">
             <FiSearch size={16} className="text-neutral-400 shrink-0" />
             <input
               value={search}
@@ -365,7 +365,7 @@ export default function ExpiredPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center gap-3 rounded-lg border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
               <Spinner className="size-5 text-neutral-500" />
               <p className="text-sm font-medium text-neutral-600">Checking links...</p>
             </div>

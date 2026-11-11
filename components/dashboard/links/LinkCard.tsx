@@ -197,7 +197,7 @@ export default function LinkCard({
       checked={selected}
       onChange={() => onSelect(link.id)}
       aria-label={`Select ${displayTitle(link)}`}
-      className="mt-1 w-4 h-4 shrink-0 rounded border-neutral-300 accent-[var(--brand)] cursor-pointer transition-transform active:scale-90"
+      className="mt-1 w-4 h-4 shrink-0 rounded-md border-neutral-300 accent-[var(--brand)] cursor-pointer transition-transform active:scale-90"
     />
   );
 

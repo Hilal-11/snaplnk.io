@@ -161,7 +161,7 @@ export default function TagsPage() {
         </div>
 
         <div className="flex items-center gap-3 mb-6 flex-wrap">
-          <div className="w-full max-w-sm flex items-center gap-2 bg-white border border-neutral-200 rounded-full px-4 py-2.5 shadow-sm">
+          <div className="w-full max-w-sm flex items-center gap-2 bg-white border border-neutral-200 rounded-lg px-4 py-2.5 shadow-sm">
             <FiSearch size={16} className="text-neutral-400 shrink-0" />
             <input
               value={search}
@@ -189,7 +189,7 @@ export default function TagsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="flex items-center gap-3 rounded-full border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center gap-3 rounded-lg border border-neutral-200/70 bg-white px-8 py-3 shadow-[0px_1px_2px_rgba(0,0,0,0.04),0px_4px_12px_rgba(0,0,0,0.05)]">
               <Spinner className="size-5 text-neutral-500" />
               <p className="text-sm font-medium text-neutral-600">Organizing tags...</p>
             </div>
