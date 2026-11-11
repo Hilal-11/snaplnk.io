@@ -26,7 +26,7 @@ export const createLinkSchema = z.object({
 
 export const updateLinkSchema = z.object({
   isActive: z.boolean().optional(),
-  expiresAt: z.string().datetime({ message: "expiresAt must be a valid date" }).optional(),
+  expiresAt: z.string().datetime({ message: "expiresAt must be a valid date" }).nullable().optional(),
   archivedLink: z.boolean().optional(),
   archivedAt: z.string().datetime({ message: "archivedAt must be a valid date" }).optional(),
   isDeleted: z.boolean().optional(),

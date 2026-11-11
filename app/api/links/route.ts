@@ -8,16 +8,11 @@ import { getClientIp } from "@/lib/getClientIp";
 import { validateDestinationUrl } from "@/lib/validators/url";
 import { limitLinkCreation, rateLimitHeaders } from "@/lib/ratelimit";
 import { PUBLIC_LINK_COLUMNS } from "@/config/linkColumns";
+import { isReservedAlias } from "@/lib/bio/reserved";
 
 // ---------- helpers ----------
 
 const ALIAS_REGEX = /^[A-Za-z0-9_-]{3,30}$/;
-const RESERVED_ALIASES = new Set([
-  "api", "auth", "dashboard", "signup", "login", "logout", "pricing", "faq",
-  "docs", "blog", "about", "terms", "privacy", "contact", "admin", "settings",
-  "status", "health", "bio", "qr", "robots.txt", "sitemap.xml", "favicon.ico",
-]);
-
 const MAX_CODE_ATTEMPTS = 5;
 const GUEST_LINK_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -138,10 +133,44 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Invalid request body" }, { status: 400, headers: rlHeaders });
   }
 
-  const { original_url, short_code } = body as {
+  const { original_url, short_code, title, tags, expires_at } = body as {
     original_url?: unknown;
     short_code?: unknown;
+    title?: unknown;
+    tags?: unknown;
+    expires_at?: unknown;
   };
+
+  // Optional metadata (signed-in users only; silently ignored for guests)
+  let cleanTitle: string | null = null;
+  let cleanTags: string[] | null = null;
+  let userExpiresAt: string | null = null;
+  if (!isGuest) {
+    if (typeof title === "string" && title.trim()) {
+      cleanTitle = title.trim().slice(0, 200);
+    }
+    if (Array.isArray(tags)) {
+      const list = Array.from(
+        new Set(
+          tags
+            .filter((t): t is string => typeof t === "string")
+            .map((t) => t.trim().slice(0, 40))
+            .filter(Boolean)
+        )
+      ).slice(0, 20);
+      if (list.length) cleanTags = list;
+    }
+    if (typeof expires_at === "string" && expires_at) {
+      const d = new Date(expires_at);
+      if (Number.isNaN(d.getTime()) || d.getTime() <= Date.now()) {
+        return Response.json(
+          { error: "Expiry date must be in the future" },
+          { status: 400, headers: rlHeaders }
+        );
+      }
+      userExpiresAt = d.toISOString();
+    }
+  }
 
   // 3) Validate destination URL
   if (typeof original_url !== "string") {
@@ -174,14 +203,16 @@ export async function POST(request: NextRequest) {
       );
     }
     const alias = short_code.trim();
-    if (RESERVED_ALIASES.has(alias.toLowerCase())) {
+    if (isReservedAlias(alias)) {
       return Response.json({ error: "That alias is reserved" }, { status: 400, headers: rlHeaders });
     }
     customAlias = alias;
   }
 
   const isCustomAlias = customAlias !== null;
-  const expiresAt = isGuest ? new Date(Date.now() + GUEST_LINK_TTL_MS).toISOString() : null;
+  const expiresAt = isGuest
+    ? new Date(Date.now() + GUEST_LINK_TTL_MS).toISOString()
+    : userExpiresAt;
 
   // 5) Insert. Uniqueness is enforced by the UNIQUE(short_code) constraint.
   //    (A SELECT pre-check is unreliable: RLS hides other users' rows from you.)
@@ -200,6 +231,8 @@ export async function POST(request: NextRequest) {
         domain: baseUrlObj.host,
         is_custom_alias: isCustomAlias,
         expires_at: expiresAt,
+        ...(cleanTitle ? { title: cleanTitle } : {}),
+        ...(cleanTags ? { tags: cleanTags } : {}),
       })
       .select(PUBLIC_LINK_COLUMNS)
       .single();

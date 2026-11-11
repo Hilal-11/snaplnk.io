@@ -23,7 +23,7 @@ export default async function RecentLinksCard() {
     .eq("owner", user!.id)
     .eq("is_deleted", false)
     .order("created_at", { ascending: false })
-    .limit(3);
+    .limit(5);
 
   // pull the most recent click's location per link, for the "last seen from" line
   const linkIds = links?.map((l) => l.id) ?? [];

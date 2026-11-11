@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { updateLinkSchema, linkIdSchema } from "@/lib/validators/links.schems";
 import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import bcrypt from "bcryptjs";
+import { PUBLIC_LINK_COLUMNS } from "@/config/linkColumns";
 
 type Params = { params: Promise<{ linkId: string }> };
 
@@ -119,7 +120,7 @@ export async function PATCH(req: Request, { params }: Params) {
     .update(updateFields)
     .eq("id", linkId)
     .eq("owner", user.id)
-    .select()
+    .select(PUBLIC_LINK_COLUMNS)
     .maybeSingle();
 
   if (dbError || !link) {
