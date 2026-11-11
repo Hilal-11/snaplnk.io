@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: en-US
+
+reviews:
+  profile: assertive          # "chill" = fewer comments, "assertive" = stricter
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+
+  path_filters:
+    - "!package-lock.json"
+    - "!public/**"
+    - "!**/*.svg"
+    - "!**/*.md"
+
+  path_instructions:
+    - path: "app/api/**"
+      instructions: |
+        Review API route handlers for:
+        - Auth checks on every route; guests are anonymous Supabase users (user.is_anonymous)
+          and must be blocked from analytics, edit and delete
+        - Input validation (Zod or manual), safe JSON parsing, correct status codes
+        - Never return password_hash or raw database error messages to the client
+        - Rate limiting on public or write endpoints (Upstash)
+        - Supabase queries scoped by owner, with pagination limits clamped
+
+    - path: "app/[[]shortCode[]]/**"
+      instructions: |
+        This is the hot redirect path. Flag anything that adds latency:
+        - Sequential awaits that could run in parallel, or blocking DB writes on each click
+        - Missing Redis cache-aside, missing cache invalidation, missing negative caching
+        - Open redirect risks, 301 vs 302 mistakes, bot handling
+
+    - path: "proxy.ts"
+      instructions: |
+        Auth middleware. Check that /dashboard and /api/analytics reject both unauthenticated
+        and anonymous users, and that refreshed Supabase cookies are preserved on redirects.
+
+    - path: "lib/**"
+      instructions: |
+        Check for error handling, type safety, hidden side effects, and that secrets
+        are only read server-side.
+
+    - path: "components/**"
+      instructions: |
+        Check accessibility (labels, keyboard use), unnecessary re-renders, missing
+        loading and error states, and that no component treats anonymous users as logged in.
+
+    - path: "**/*.sql"
+      instructions: |
+        Review for RLS gaps, missing indexes (short_code, owner + created_at, click_events
+        link_id + clicked_at), unsafe cascades, and migration reversibility.
+
+  tools:
+    eslint:
+      enabled: true
+    gitleaks:
+      enabled: true           # catches committed API keys (Supabase, Cloudinary, Upstash)
