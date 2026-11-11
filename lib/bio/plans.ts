@@ -52,6 +52,9 @@ export const BIO_PLANS: Readonly<Record<PlanId, Readonly<BioPlanLimits>>> = {
 
 export const DEFAULT_PLAN: PlanId = "free";
 
+/** Block types only Pro pages may use (email capture is v1.1). */
+export const PRO_ONLY_BLOCK_TYPES: readonly string[] = ["email_capture"];
+
 export function getPlanLimits(plan: string | null | undefined): Readonly<BioPlanLimits> {
   return plan === "pro" ? BIO_PLANS.pro : BIO_PLANS[DEFAULT_PLAN];
 }
