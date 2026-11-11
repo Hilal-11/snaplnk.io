@@ -44,7 +44,7 @@ export default function DashboardHeader() {
           {segments.map((seg, i) => {
             const href = "/" + segments.slice(0, i + 1).join("/");
             const isLast = i === segments.length - 1;
-            const label = routeLabels[seg] ?? seg;
+            const label = routeLabels[seg] ?? (/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(seg) ? "Page" : seg);
 
             return (
               <span key={href} className="flex items-center gap-1.5">

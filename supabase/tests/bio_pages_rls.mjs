@@ -11,8 +11,9 @@
 import { PGlite } from "@electric-sql/pglite";
 import { readFileSync } from "node:fs";
 
-const migrationPath = process.argv[2];
-let migration = readFileSync(migrationPath, "utf8");
+// usage: node bio_pages_rls.mjs <migration.sql> [more.sql ...]  (applied in order)
+const migrationPaths = process.argv.slice(2);
+let migration = migrationPaths.map((p) => readFileSync(p, "utf8")).join("\n");
 // pgcrypto isn't bundled with this PGlite build; gen_random_uuid() is core since PG13.
 migration = migration.replace(/create extension if not exists pgcrypto;/i, "-- (pgcrypto skipped in PGlite)");
 
@@ -192,6 +193,41 @@ await check("A cannot upload to bucket root", denied, () =>
   as("A", () => db.query("insert into storage.objects (bucket_id, name) values ('bio-assets', 'avatar.webp')")));
 await check("guest cannot upload even into own folder", denied, () =>
   as("G", () => db.query("insert into storage.objects (bucket_id, name) values ('bio-assets', $1)", [`${G}/a.webp`])));
+
+// ---------- RPCs (second migration) ----------
+if (migrationPaths.length > 1) {
+  const bob = rows(await db.query("select id, version from bio_pages where username='bob'"))[0];
+  await check("anon cannot read unpublished page via bio_get_public_page", (o) => o.ok && o.value.length === 0, () =>
+    as("anon", async () => rows(await db.query("select * from bio_get_public_page('bob')"))));
+  await check("A cannot publish B's page", errorCode("P0002"), () =>
+    as("A", () => db.query("select bio_publish_page($1, $2)", [bob.id, bob.version])));
+  await check("guest cannot publish", denied, () =>
+    as("G", () => db.query("select bio_publish_page($1, $2)", [bob.id, bob.version])));
+  await check("B publish with stale version -> conflict", errorCode("P0002"), () =>
+    as("B", () => db.query("select bio_publish_page($1, $2)", [bob.id, bob.version + 7])));
+  await check("B publishes own page", (o) => o.ok, () =>
+    as("B", () => db.query("select bio_publish_page($1, $2)", [bob.id, bob.version])));
+  await check("anon reads published snapshot only (no draft column)",
+    (o) => o.ok && o.value.length === 1 && !("draft" in o.value[0]) && !!o.value[0].published.doc,
+    () => as("anon", async () => rows(await db.query("select * from bio_get_public_page('BOB')"))));
+  await check("A cannot unpublish B's page", errorCode("P0002"), () =>
+    as("A", () => db.query("select bio_unpublish_page($1)", [bob.id])));
+  await check("B unpublishes -> public read empty", (o) => o.ok && o.value.length === 0, async () => {
+    await as("B", () => db.query("select bio_unpublish_page($1)", [bob.id]));
+    return as("anon", async () => rows(await db.query("select * from bio_get_public_page('bob')")));
+  });
+  await check("suspended page is never public", (o) => o.ok && o.value.length === 0, async () => {
+    await as("service", () => db.query("update bio_pages set is_published = true, is_suspended = true where id = $1", [bob.id]));
+    return as("anon", async () => rows(await db.query("select * from bio_get_public_page('bob')")));
+  });
+  const statusCases = [["bob", "taken"], ["admin", "reserved"], ["my_snaplnk", "reserved"], ["ab", "invalid"], ["fresh_name", "available"]];
+  for (const [name, expected] of statusCases) {
+    await check("username_status(" + name + ") = " + expected, (o) => o.ok && o.value === expected, () =>
+      as("A", async () => rows(await db.query("select bio_username_status($1) s", [name]))[0].s));
+  }
+  await check("anon cannot call username_status", denied, () =>
+    as("anon", () => db.query("select bio_username_status('x')")));
+}
 
 // ---------- cascade ----------
 await check("deleting the page cascades events/stats/subscribers", (o) => o.ok && o.value === "0/0/0", () =>

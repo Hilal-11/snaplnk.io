@@ -176,3 +176,60 @@ export function getRenderableBlocks(blocks: readonly Block[], now: Date = new Da
   }
   return out;
 }
+
+// ---------- editor helpers ----------
+
+export const BLOCK_TYPE_LABELS: Record<BlockType, string> = {
+  link: "Link",
+  heading: "Heading",
+  text: "Text",
+  divider: "Divider",
+  social: "Social icons",
+  embed: "Embed",
+  contact_card: "Contact card",
+};
+
+/** A sensible new block for the editor palette (fresh uuid). */
+export function createDefaultBlock(type: BlockType): Block {
+  const id = crypto.randomUUID();
+  switch (type) {
+    case "link":
+      return { id, type, title: "New link", url: "https://example.com", placeholder: true };
+    case "heading":
+      return { id, type, text: "New section" };
+    case "text":
+      return { id, type, text: "Write something about yourself." };
+    case "divider":
+      return { id, type, style: "line" };
+    case "social":
+      return {
+        id,
+        type,
+        items: [
+          { platform: "instagram", handle: "" },
+          { platform: "x", handle: "" },
+        ],
+      };
+    case "embed":
+      return { id, type, url: "" };
+    case "contact_card":
+      return { id, type, title: "Save my contact", name: "", phone: "", email: "", company: "", website: "" };
+  }
+}
+
+/** Safe parse of a stored document: invalid blocks are dropped instead of failing the page. */
+export function parseDocumentLenient(value: unknown): BioDocument {
+  const raw = (value && typeof value === "object" ? value : {}) as { blocks?: unknown };
+  const blocks: Block[] = [];
+  const seen = new Set<string>();
+  if (Array.isArray(raw.blocks)) {
+    for (const b of raw.blocks.slice(0, MAX_BLOCKS_PER_PAGE)) {
+      const r = blockSchema.safeParse(b);
+      if (r.success && !seen.has(r.data.id)) {
+        seen.add(r.data.id);
+        blocks.push(r.data);
+      }
+    }
+  }
+  return { schema_version: BIO_SCHEMA_VERSION, blocks };
+}

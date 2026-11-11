@@ -16,4 +16,5 @@ export const routeLabels: Record<string, string> = {
   billing: "Billing",
   settings: "Settings",
   new: "Create",
+  edit: "Editor",
 };
