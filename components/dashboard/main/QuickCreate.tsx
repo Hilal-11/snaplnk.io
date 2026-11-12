@@ -21,6 +21,8 @@ import {
 import { TbQrcode } from "react-icons/tb";
 import { downloadQr, shareUrl } from "@/components/dashboard/links/utils";
 import type { LinkItem } from "@/components/dashboard/links/types";
+import { usePrefs } from "@/hooks/usePrefs";
+import { expiryFromPrefs } from "@/lib/prefs";
 
 type Mode = "link" | "qr";
 
@@ -33,6 +35,7 @@ export default function QuickCreate() {
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<LinkItem | null>(null);
   const [copied, setCopied] = useState(false);
+  const { prefs } = usePrefs();
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
@@ -48,12 +51,21 @@ export default function QuickCreate() {
       const res = await fetch("/api/links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ original_url: withProtocol }),
+        body: JSON.stringify({ original_url: withProtocol, expires_at: expiryFromPrefs(prefs) }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) return setError(json.error ?? "Something went wrong");
       setCreated(json.data as LinkItem);
       setUrl("");
+      if (prefs.autoCopy && json.data?.short_code) {
+        navigator.clipboard
+          .writeText(getShortUrl(json.data.short_code))
+          .then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          })
+          .catch(() => undefined);
+      }
       router.refresh(); // update Recent links
     } catch {
       setError("Network error — please try again");

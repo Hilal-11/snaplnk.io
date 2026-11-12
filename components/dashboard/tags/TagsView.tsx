@@ -24,6 +24,7 @@ import { useLinks } from "@/components/dashboard/links/useLinks";
 import type { LinkItem, ViewMode } from "@/components/dashboard/links/types";
 import { displayTitle, normalizeTag, timeAgo } from "@/components/dashboard/links/utils";
 import { getShortUrlDisplay } from "@/lib/utils/getShortUrl";
+import { getDefaultView, subscribeDevicePrefs } from "@/lib/devicePrefs";
 
 type Sort = "links" | "clicks" | "name" | "recent";
 type TagGroup = { name: string; links: LinkItem[]; clicks: number; lastUsed: string };
@@ -35,13 +36,12 @@ const GRID_CLASS: Record<ViewMode, string> = {
   grid4: "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4",
 };
 
-const noopSubscribe = () => () => {};
 function readView(): ViewMode {
   try {
     const v = localStorage.getItem("snaplnk:view:tags");
     if (v === "list" || v === "grid2" || v === "grid4") return v;
   } catch {}
-  return "grid2";
+  return getDefaultView();
 }
 
 export default function TagsView() {
@@ -49,7 +49,7 @@ export default function TagsView() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<Sort>("links");
   const [viewOverride, setViewOverride] = useState<ViewMode | null>(null);
-  const storedView = useSyncExternalStore(noopSubscribe, readView, () => "grid2" as ViewMode);
+  const storedView = useSyncExternalStore(subscribeDevicePrefs, readView, () => "grid2" as ViewMode);
   const view = viewOverride ?? storedView;
 
   const [renaming, setRenaming] = useState<TagGroup | null>(null);

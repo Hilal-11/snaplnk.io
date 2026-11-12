@@ -415,6 +415,13 @@ html.dark {
     border-radius: 6px;
   }
   /* Smooth theme switch for surfaces (next-themes disables transitions during the swap) */
+  html[data-reduce-motion] *,
+  html[data-reduce-motion] *::before,
+  html[data-reduce-motion] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
