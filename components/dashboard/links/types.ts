@@ -38,7 +38,11 @@ export interface LinkPatch {
   expiresAt?: string | null;
   archivedLink?: boolean;
   isDeleted?: boolean;
+  maxClicks?: number | null;
 }
+
+/** Which slice of links a collection page manages. */
+export type CollectionScope = "all" | "archived" | "expired" | "deleted";
 
 export type ViewMode = "list" | "grid2" | "grid4";
 

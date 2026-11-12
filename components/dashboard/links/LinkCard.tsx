@@ -20,6 +20,8 @@ import {
   FiLock,
   FiPause,
   FiPlay,
+  FiRefreshCw,
+  FiRotateCcw,
   FiShare2,
   FiTrash2,
 } from "react-icons/fi";
@@ -27,8 +29,8 @@ import { TbQrcode } from "react-icons/tb";
 import LinkActionsMenu, { type MenuItem } from "./LinkActionsMenu";
 import { InlineTags } from "./TagInput";
 import StatusBadge from "./StatusBadge";
-import type { CardVariant, LinkItem, ViewMode } from "./types";
-import { displayTitle, downloadQr, faviconFor, formatDate, getLinkStatus, shareUrl } from "./utils";
+import type { CardVariant, CollectionScope, LinkItem, ViewMode } from "./types";
+import { displayTitle, downloadQr, faviconFor, formatDate, getLinkStatus, shareUrl, timeAgo } from "./utils";
 
 export interface LinkCardHandlers {
   onEdit: (link: LinkItem) => void;
@@ -39,6 +41,12 @@ export interface LinkCardHandlers {
   onToggleActive: (link: LinkItem) => void;
   onTagsChange: (link: LinkItem, tags: string[]) => void;
   onTagClick: (tag: string) => void;
+  /** Trash: move back to the live list. */
+  onRestore?: (link: LinkItem) => void;
+  /** Trash: delete forever. */
+  onPurge?: (link: LinkItem) => void;
+  /** Expired: clear expiry / click limit and re-enable. */
+  onReactivate?: (link: LinkItem) => void;
 }
 
 /* Icon-only button with a small hover tooltip. */
@@ -106,6 +114,7 @@ export default function LinkCard({
   selected,
   onSelect,
   handlers,
+  scope = "all",
 }: {
   link: LinkItem;
   variant: CardVariant;
@@ -113,6 +122,7 @@ export default function LinkCard({
   selected: boolean;
   onSelect: (id: string) => void;
   handlers: LinkCardHandlers;
+  scope?: CollectionScope;
 }) {
   const [copied, setCopied] = useState(false);
   const [shareMsg, setShareMsg] = useState(false);
@@ -136,7 +146,7 @@ export default function LinkCard({
     }
   }
 
-  const menuItems: MenuItem[] = [
+  const baseMenu: MenuItem[] = [
     { label: "View link details", icon: FiInfo, onClick: () => handlers.onDetails(link) },
     variant === "link"
       ? { label: "View QR code", icon: TbQrcode, onClick: () => handlers.onViewQr(link), disabled: !link.qr_code_url }
@@ -165,8 +175,76 @@ export default function LinkCard({
     { label: "Delete", icon: FiTrash2, onClick: () => handlers.onDelete(link), danger: true, separated: true },
   ];
 
+  const inTrash = scope === "deleted";
+  const analyticsHref = "/dashboard/analytics?link=" + link.id;
+  const menuItems: MenuItem[] =
+    scope === "deleted"
+      ? [
+          { label: "View link details", icon: FiInfo, onClick: () => handlers.onDetails(link) },
+          { label: "Copy short link", icon: FiCopy, onClick: copy },
+          { label: "Open destination", icon: FiExternalLink, onClick: () => window.open(link.original_url, "_blank", "noopener") },
+          { label: "Restore", icon: FiRotateCcw, onClick: () => handlers.onRestore?.(link), separated: true },
+          { label: "Delete forever", icon: FiTrash2, onClick: () => handlers.onPurge?.(link), danger: true },
+        ]
+      : scope === "archived"
+        ? [
+            ...baseMenu.slice(0, 4),
+            { label: "Unarchive", icon: FiEye, onClick: () => handlers.onToggleHidden(link), separated: true },
+            { label: "Move to trash", icon: FiTrash2, onClick: () => handlers.onDelete(link), danger: true, separated: true },
+          ]
+        : scope === "expired"
+          ? [
+              ...baseMenu.slice(0, 4),
+              { label: "Change expiry", icon: FiCalendar, onClick: () => handlers.onEdit(link), separated: true },
+              { label: "Reactivate", icon: FiRefreshCw, onClick: () => handlers.onReactivate?.(link) },
+              { label: "Move to trash", icon: FiTrash2, onClick: () => handlers.onDelete(link), danger: true, separated: true },
+            ]
+          : baseMenu;
+
   /* ---------- action buttons (right side) ---------- */
-  const actions = (
+  const scopedActions =
+    scope === "deleted" ? (
+      <div className="flex items-center gap-0.5 shrink-0">
+        <IconAction small={compact} label="Restore" onClick={() => handlers.onRestore?.(link)}>
+          <FiRotateCcw size={15} />
+        </IconAction>
+        <IconAction small={compact} label="Details" onClick={() => handlers.onDetails(link)}>
+          <FiInfo size={15} />
+        </IconAction>
+        <IconAction small={compact} label="Delete forever" onClick={() => handlers.onPurge?.(link)}>
+          <FiTrash2 size={15} className="text-red-600" />
+        </IconAction>
+        <LinkActionsMenu items={menuItems} size={compact ? "sm" : "md"} />
+      </div>
+    ) : scope === "archived" ? (
+      <div className="flex items-center gap-0.5 shrink-0">
+        <IconAction small={compact} label="Unarchive" onClick={() => handlers.onToggleHidden(link)}>
+          <FiEye size={15} />
+        </IconAction>
+        <IconAction small={compact} label="Edit" onClick={() => handlers.onEdit(link)}>
+          <FiEdit2 size={15} />
+        </IconAction>
+        <IconAction small={compact} label="Analytics" href={analyticsHref}>
+          <FiBarChart2 size={15} />
+        </IconAction>
+        <LinkActionsMenu items={menuItems} size={compact ? "sm" : "md"} />
+      </div>
+    ) : scope === "expired" ? (
+      <div className="flex items-center gap-0.5 shrink-0">
+        <IconAction small={compact} label="Change expiry" onClick={() => handlers.onEdit(link)}>
+          <FiCalendar size={15} />
+        </IconAction>
+        <IconAction small={compact} label="Reactivate" onClick={() => handlers.onReactivate?.(link)}>
+          <FiRefreshCw size={15} />
+        </IconAction>
+        <IconAction small={compact} label="Analytics" href={analyticsHref}>
+          <FiBarChart2 size={15} />
+        </IconAction>
+        <LinkActionsMenu items={menuItems} size={compact ? "sm" : "md"} />
+      </div>
+    ) : null;
+
+  const actions = scopedActions ?? (
     <div className="flex items-center gap-0.5 shrink-0">
       <IconAction small={compact} label="Edit" onClick={() => handlers.onEdit(link)}>
         <FiEdit2 size={15} />
@@ -277,10 +355,28 @@ export default function LinkCard({
           <span className="truncate">{shortDisplay}</span>
         </span>
       )}
-      {status !== "active" && <StatusBadge link={link} />}
+      {inTrash ? (
+        <span className="inline-flex items-center gap-1 rounded-md border border-red-100 bg-red-50 px-1.5 py-0.5 text-[11px] font-semibold text-red-700">
+          <FiTrash2 size={11} /> Deleted {link.deleted_at ? timeAgo(link.deleted_at) : ""}
+        </span>
+      ) : scope === "archived" && link.archived_at ? (
+        <span className="inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-neutral-100 px-1.5 py-0.5 text-[11px] font-semibold text-neutral-600">
+          <FiEyeOff size={11} /> Archived {timeAgo(link.archived_at)}
+        </span>
+      ) : scope === "expired" ? (
+        <span className="inline-flex items-center gap-1 rounded-md border border-orange-100 bg-orange-50 px-1.5 py-0.5 text-[11px] font-semibold text-orange-700">
+          <FiCalendar size={11} />
+          {status === "limit"
+            ? "Limit reached · " + link.clicks_count + "/" + link.max_clicks
+            : "Expired " + (link.expires_at ? formatDate(link.expires_at) : "")}
+        </span>
+      ) : (
+        status !== "active" && <StatusBadge link={link} />
+      )}
       <InlineTags
         tags={link.tags ?? []}
         compact={compact}
+        readOnly={inTrash}
         onChange={(tags) => handlers.onTagsChange(link, tags)}
         onTagClick={handlers.onTagClick}
       />
@@ -302,7 +398,7 @@ export default function LinkCard({
     selected
       ? "border-brand ring-2 ring-brand/25 bg-brand-soft/30"
       : "border-neutral-200/80 hover:border-neutral-300 hover:shadow-[0px_10px_28px_-14px_rgba(0,0,0,0.22)]"
-  } ${status === "hidden" || status === "disabled" ? "opacity-80" : ""}`;
+  } ${status === "hidden" || status === "disabled" ? "opacity-80" : ""} ${inTrash ? "[&_img]:grayscale" : ""}`;
 
   if (isList) {
     return (
