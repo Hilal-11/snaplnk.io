@@ -129,7 +129,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
                 availability.state === "unavailable"
                   ? "border-red-300 focus-within:shadow-[0_0_0_3px_rgb(239_68_68/0.12)]"
                   : availability.state === "available"
-                    ? "border-emerald-300 focus-within:shadow-[0_0_0_3px_rgb(16_185_129/0.12)]"
+                    ? "border-orange-300 focus-within:shadow-[0_0_0_3px_rgb(16_185_129/0.12)]"
                     : "border-neutral-200 focus-within:border-brand/60 focus-within:shadow-[0_0_0_3px_var(--brand-soft)]"
               }`}
             >
@@ -153,7 +153,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
             </div>
             <p
               className={`mt-1.5 min-h-4 text-xs ${
-                availability.state === "unavailable" ? "text-red-600" : availability.state === "available" ? "text-emerald-700" : "text-neutral-400"
+                availability.state === "unavailable" ? "text-red-600" : availability.state === "available" ? "text-orange-700" : "text-neutral-400"
               }`}
               aria-live="polite"
             >

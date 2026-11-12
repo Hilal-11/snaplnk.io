@@ -224,7 +224,7 @@ function PageCard({ page, onDelete }: { page: PageRow; onDelete: () => void }) {
     ? { label: "Draft", cls: "bg-neutral-100 text-neutral-600 border-neutral-200" }
     : page.has_unpublished_changes
       ? { label: "Unpublished changes", cls: "bg-orange-50 text-orange-700 border-orange-100" }
-      : { label: "Published", cls: "bg-emerald-50 text-emerald-700 border-emerald-100" };
+      : { label: "Published", cls: "bg-orange-50 text-orange-700 border-orange-100" };
 
   return (
     <div className="group flex h-full items-stretch gap-4 rounded-xl border border-neutral-200 bg-white p-3 hover:border-neutral-300 hover:shadow-[0px_12px_28px_-16px_rgba(0,0,0,0.25)] transition-[border-color,box-shadow]">
