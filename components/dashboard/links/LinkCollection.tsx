@@ -25,6 +25,7 @@ import { CreateButton, PageTitle, SearchInput, ViewToggle } from "./CollectionTo
 import { useLinks } from "./useLinks";
 import type { CardVariant, CollectionScope, LinkItem, ViewMode } from "./types";
 import { displayTitle, getLinkStatus } from "./utils";
+import { getDefaultView, subscribeDevicePrefs } from "@/lib/devicePrefs";
 
 type Filter = "all" | "active" | "disabled" | "expired" | "hidden";
 type Sort = "newest" | "oldest" | "clicks";
@@ -108,14 +109,13 @@ const SCOPE_COPY: Record<Exclude<CollectionScope, "all">, Copy> = {
   },
 };
 
-const noopSubscribe = () => () => {};
-
+/** Layout picked on this page, else the default from Settings → Appearance. */
 function readView(key: string): ViewMode {
   try {
     const v = localStorage.getItem(key);
     if (v === "list" || v === "grid2" || v === "grid4") return v;
   } catch {}
-  return "list";
+  return getDefaultView();
 }
 
 const isExpired = (l: LinkItem) => {
@@ -153,7 +153,7 @@ export default function LinkCollection({
 
   // Saved layout preference (server snapshot is "list" to keep hydration stable).
   const storedView = useSyncExternalStore(
-    noopSubscribe,
+    subscribeDevicePrefs,
     () => readView(viewKey),
     () => "list" as ViewMode
   );

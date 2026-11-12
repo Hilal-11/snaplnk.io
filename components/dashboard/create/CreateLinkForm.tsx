@@ -26,6 +26,8 @@ import { TagInput } from "@/components/dashboard/links/TagInput";
 import { FormField } from "@/components/dashboard/links/LinkDialogs";
 import { downloadQr, faviconFor, hostnameOf, shareUrl } from "@/components/dashboard/links/utils";
 import type { LinkItem } from "@/components/dashboard/links/types";
+import { usePrefs } from "@/hooks/usePrefs";
+import { expiryFromPrefs, expiryLabel } from "@/lib/prefs";
 
 type Variant = "link" | "qr";
 
@@ -62,6 +64,7 @@ export default function CreateLinkForm({ variant, initialUrl = "" }: { variant: 
   const [alias, setAlias] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [expires, setExpires] = useState("");
+  const { prefs } = usePrefs();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +92,9 @@ export default function CreateLinkForm({ variant, initialUrl = "" }: { variant: 
       const d = new Date(`${expires}T23:59:59`);
       if (d.getTime() <= Date.now()) return setError("Expiry date must be in the future");
       expiresAt = d.toISOString();
+    } else {
+      // Settings → Preferences → default expiry for new links
+      expiresAt = expiryFromPrefs(prefs);
     }
 
     setLoading(true);
@@ -107,6 +113,9 @@ export default function CreateLinkForm({ variant, initialUrl = "" }: { variant: 
       const json = await res.json().catch(() => ({}));
       if (!res.ok) return setError(json.error ?? "Something went wrong");
       setCreated(json.data as LinkItem);
+      if (prefs.autoCopy && json.data?.short_code) {
+        navigator.clipboard.writeText(getShortUrl(json.data.short_code)).catch(() => undefined);
+      }
     } catch {
       setError("Network error — please try again");
     } finally {
@@ -196,6 +205,14 @@ export default function CreateLinkForm({ variant, initialUrl = "" }: { variant: 
                   onChange={(e) => setExpires(e.target.value)}
                   className={`${inputCls} py-2`}
                 />
+                {!expires && prefs.defaultExpiryDays && (
+                  <span className="mt-1 block text-[11px] text-neutral-500">
+                    Default: expires after {expiryLabel(prefs.defaultExpiryDays)} ·{" "}
+                    <Link href="/dashboard/settings?tab=preferences" className="font-semibold hover:text-brand">
+                      change
+                    </Link>
+                  </span>
+                )}
               </FormField>
             </div>
 
