@@ -16,6 +16,7 @@ import { IoIosArrowRoundForward } from 'react-icons/io'
 import { signIn, signUp, signInWithGithub, signInWithGoogle } from '@/app/auth/actions'
 import { useSearchParams } from 'next/navigation'
 import { safeNext } from '@/lib/safeNext'
+import { AUTH_FAILURE_MESSAGES, authFailureReason } from '@/lib/authErrors'
 import { HiArrowLeft } from 'react-icons/hi'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -122,7 +123,13 @@ function SubmitButton({ text, loading }: { text: string; loading: boolean }) {
 /* ── Main page ─────────────────────────────────────────────── */
 
 export default function LoginPage() {
- const [mode, setMode]               = useState<'signin' | 'signup'>('signup')
+ const searchParams  = useSearchParams()
+  const hasAuthError  = searchParams.get('error') === 'auth'
+  const authFailure   = hasAuthError
+    ? AUTH_FAILURE_MESSAGES[authFailureReason(searchParams.get('reason') ?? 'unknown')]
+    : null
+  // Open on "Sign in" when the user already has an account (e.g. email confirmed in another browser).
+  const [mode, setMode]               = useState<'signin' | 'signup'>(authFailure?.signIn ? 'signin' : 'signup')
   const [email, setEmail]             = useState('')
   const [password, setPassword]       = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -131,8 +138,6 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState('')
   const [message, setMessage]         = useState<{ type: 'error' | 'success'; text: string } | null>(null)
 
-  const searchParams  = useSearchParams()
-  const hasAuthError  = searchParams.get('error') === 'auth'
   const isBanned      = searchParams.get('error') === 'banned'
   // Where to go after signing in (e.g. back to the create form with the pasted URL).
   const next = safeNext(searchParams.get('next'))
@@ -240,14 +245,19 @@ if (result && 'success' in result) setMessage({ type: 'success', text: result.su
 
               {/* Auth error from callback */}
               <AnimatePresence>
-                {hasAuthError && (
+                {authFailure && (
                   <motion.div
+                    role="alert"
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="mb-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 text-sm font-sans text-red-600 dark:text-red-400"
+                    className={`mb-4 px-4 py-3 rounded-xl border text-sm font-sans ${
+                      authFailure.signIn
+                        ? 'bg-orange-50 border-orange-100 text-orange-700'
+                        : 'bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400'
+                    }`}
                   >
-                    Authentication failed. Please try again.
+                    {authFailure.text}
                   </motion.div>
                 )}
               </AnimatePresence>
