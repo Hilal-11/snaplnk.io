@@ -12,7 +12,8 @@ export type AuditAction =
   | "user.unban"
   | "user.delete"
   | "error.resolve"
-  | "settings.update";
+  | "settings.update"
+  | "data.export";
 
 export async function writeAudit(entry: {
   adminId: string | null;
