@@ -10,6 +10,7 @@ export const BIO_FONT_IDS = [
   "jetbrains-mono",
   "dm-serif-display",
   "space-grotesk",
+  "lora",
 ] as const;
 
 export type BioFontId = (typeof BIO_FONT_IDS)[number];
@@ -22,6 +23,7 @@ export const BIO_FONT_LABELS: Record<BioFontId, string> = {
   "jetbrains-mono": "JetBrains Mono",
   "dm-serif-display": "DM Serif Display",
   "space-grotesk": "Space Grotesk",
+  lora: "Lora",
 };
 
 /** CSS custom property each font is exposed as (set by components/bio/fonts.ts). */
@@ -33,4 +35,5 @@ export const BIO_FONT_VARS: Record<BioFontId, string> = {
   "jetbrains-mono": "--font-bio-jetbrains-mono",
   "dm-serif-display": "--font-bio-dm-serif-display",
   "space-grotesk": "--font-bio-space-grotesk",
+  lora: "--font-bio-lora",
 };

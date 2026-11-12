@@ -93,13 +93,13 @@ describe("buildVCard", () => {
 
 describe("validateForPublish", () => {
   it("blocks template pages until sample links are replaced", () => {
-    const t = applyTemplate("minimal")!;
+    const t = applyTemplate("link-hub")!;
     const r = validateForPublish({ displayName: "Hilal", theme: t.theme, draft: t.draft });
     expect(r.errors.filter((e) => e.blockId)).toHaveLength(4);
   });
 
   it("passes once links are real", () => {
-    const t = applyTemplate("minimal")!;
+    const t = applyTemplate("link-hub")!;
     const blocks = t.draft.blocks.map((b) =>
       b.type === "link" ? { ...b, url: "https://hila-11.com", placeholder: undefined } : b
     );
@@ -116,6 +116,14 @@ describe("validateForPublish", () => {
     const messages = r.errors.map((e) => e.message).join(" | ");
     expect(messages).toMatch(/display name/i);
     expect(r.errors.some((e) => e.blockId === id(9))).toBe(true);
+  });
+
+  it("blocks the contact-card template until its sample details are edited", () => {
+    const t = applyTemplate("contact-card")!;
+    const r = validateForPublish({ displayName: "Hearth", theme: t.theme, draft: t.draft });
+    expect(r.errors.some((e) => /sample details/.test(e.message))).toBe(true);
+    const blocks = t.draft.blocks.map((b) => (b.type === "contact_card" ? { ...b, placeholder: undefined } : b));
+    expect(validateForPublish({ displayName: "Hearth", theme: t.theme, draft: { ...t.draft, blocks } }).errors).toEqual([]);
   });
 });
 
@@ -147,9 +155,9 @@ describe("snapshot", () => {
 
 describe("api schemas", () => {
   it("createPageSchema normalizes usernames and rejects bad templates", () => {
-    expect(createPageSchema.parse({ username: "@Hilal_11", template_id: "creator" })).toEqual({
+    expect(createPageSchema.parse({ username: "@Hilal_11", template_id: "link-hub" })).toEqual({
       username: "hilal_11",
-      template_id: "creator",
+      template_id: "link-hub",
     });
     expect(createPageSchema.safeParse({ username: "admin" }).success).toBe(false);
     expect(createPageSchema.safeParse({ username: "hilal", template_id: "nope" }).success).toBe(false);

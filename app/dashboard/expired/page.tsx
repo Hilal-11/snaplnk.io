@@ -268,7 +268,7 @@ function ExpiredRow({
           {expiry.reason === "Time expired" ? (
             <FiXCircle size={14} className="text-red-400 shrink-0" />
           ) : (
-            <FiAlertTriangle size={14} className="text-amber-500 shrink-0" />
+            <FiAlertTriangle size={14} className="text-orange-500 shrink-0" />
           )}
           <span className="text-xs font-medium text-neutral-700">{expiry.reason}</span>
         </div>

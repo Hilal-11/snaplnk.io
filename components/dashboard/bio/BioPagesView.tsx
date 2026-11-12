@@ -41,7 +41,7 @@ const BLANK: BioTemplate = {
   id: "blank",
   name: "Blank",
   category: "start fresh",
-  description: "An empty page with a clean light theme. Add only what you need.",
+  description: "Start from scratch and build your own — begins with a clean light card layout.",
   profile: { displayName: "Your Name", bio: "" },
   theme: DEFAULT_THEME,
   blocks: [],
@@ -157,7 +157,7 @@ export default function BioPagesView() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {templates.map((t, i) => (
             <motion.div
               key={t.id}
@@ -170,8 +170,9 @@ export default function BioPagesView() {
                 <span aria-hidden className="pointer-events-none absolute inset-0 bg-grid mask-fade-radial" />
                 <div className="relative overflow-hidden rounded-t-xl border border-b-0 border-neutral-200 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:-translate-y-1">
                   <BioPreviewFrame
-                    width={190}
-                    aspect={1.25}
+                    width={210}
+                    aspect={1.3}
+                    username="yourname"
                     profile={t.profile}
                     theme={t.theme}
                     blocks={t.blocks.map((b, j) => ({ ...b, id: `00000000-0000-4000-8000-${String(j).padStart(12, "0")}` }))}
@@ -234,18 +235,19 @@ function PageCard({ page, onDelete }: { page: PageRow; onDelete: () => void }) {
   const status = !page.is_published
     ? { label: "Draft", cls: "bg-neutral-100 text-neutral-600 border-neutral-200" }
     : page.has_unpublished_changes
-      ? { label: "Unpublished changes", cls: "bg-amber-50 text-amber-700 border-amber-100" }
+      ? { label: "Unpublished changes", cls: "bg-orange-50 text-orange-700 border-orange-100" }
       : { label: "Published", cls: "bg-emerald-50 text-emerald-700 border-emerald-100" };
 
   return (
-    <div className="group flex gap-4 rounded-xl border border-neutral-200 bg-white p-4 hover:border-neutral-300 transition-colors">
-      <div className="shrink-0 overflow-hidden rounded-lg border border-neutral-200">
+    <div className="group flex h-full items-stretch gap-4 rounded-xl border border-neutral-200 bg-white p-3 hover:border-neutral-300 hover:shadow-[0px_12px_28px_-16px_rgba(0,0,0,0.25)] transition-[border-color,box-shadow]">
+      <div className="shrink-0 self-stretch overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100">
         <BioPreviewFrame
-          width={110}
-          aspect={1.45}
+          width={124}
+          aspect={1.6}
           profile={{ displayName: page.display_name, bio: page.bio }}
           theme={theme}
           blocks={doc.blocks}
+          username={page.username}
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">

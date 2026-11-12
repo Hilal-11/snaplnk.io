@@ -3,7 +3,7 @@
 // self-hosts them, so visitors' browsers never request fonts from Google at runtime.
 // Import `bioFontVariables` only in bio-page routes (public page + builder preview),
 // so the rest of the app doesn't pay for these fonts.
-import { DM_Serif_Display, Inter, JetBrains_Mono, Poppins, Space_Grotesk } from "next/font/google";
+import { DM_Serif_Display, Inter, JetBrains_Mono, Lora, Poppins, Space_Grotesk } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-bio-inter", display: "swap" });
 const poppins = Poppins({
@@ -20,6 +20,7 @@ const dmSerifDisplay = DM_Serif_Display({
   display: "swap",
 });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-bio-space-grotesk", display: "swap" });
+const lora = Lora({ subsets: ["latin"], variable: "--font-bio-lora", display: "swap" });
 
 /** className that defines every --font-bio-* variable (see lib/bio/fonts.ts BIO_FONT_VARS). */
 export const bioFontVariables = [
@@ -28,4 +29,5 @@ export const bioFontVariables = [
   jetbrainsMono.variable,
   dmSerifDisplay.variable,
   spaceGrotesk.variable,
+  lora.variable,
 ].join(" ");

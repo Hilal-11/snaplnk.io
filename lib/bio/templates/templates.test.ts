@@ -2,14 +2,21 @@ import { describe, expect, it } from "vitest";
 import { bioDocumentSchema, blockSchema, getPlaceholderBlocks, getRenderableBlocks } from "@/lib/bio/blocks";
 import { getThemeContrastIssues, themeSchema } from "@/lib/bio/theme";
 import { BIO_PLANS, PRO_ONLY_BLOCK_TYPES } from "@/lib/bio/plans";
-import { TEMPLATES, getTemplate, templateIdSchema } from "./index";
+import { TEMPLATES, THEME_PRESETS, getTemplate, templateIdSchema } from "./index";
 import { applyTemplate } from "./apply";
 
 const DUMMY_ID = "00000000-0000-4000-8000-000000000000";
 
 describe("template registry", () => {
-  it("ships all 5 starter templates", () => {
-    expect(TEMPLATES.map((t) => t.id)).toEqual(["minimal", "creator", "developer", "business", "neon"]);
+  it("ships exactly the 2 free starter templates (Blank is added by the UI)", () => {
+    expect(TEMPLATES.map((t) => t.id)).toEqual(["link-hub", "contact-card"]);
+  });
+
+  it("every design preset is valid and readable", () => {
+    for (const p of THEME_PRESETS) {
+      expect(themeSchema.safeParse(p.theme).success, p.id).toBe(true);
+      expect(getThemeContrastIssues(p.theme), p.id).toEqual([]);
+    }
   });
 
   it("has unique ids", () => {
@@ -78,10 +85,11 @@ describe.each(TEMPLATES.map((t) => [t.id, t] as const))("template %s", (_id, tem
     expect(getTemplate(template.id)!.theme.text.color).toBe(template.theme.text.color);
   });
 
-  it("cannot be published until placeholders are replaced", () => {
+  it("cannot be published until sample links / details are replaced", () => {
     const a = applyTemplate(template.id)!;
-    const links = a.draft.blocks.filter((b) => b.type === "link" && !b.hidden);
-    expect(getPlaceholderBlocks(a.draft.blocks)).toHaveLength(links.length);
+    const samples = a.draft.blocks.filter((b) => (b.type === "link" || b.type === "contact_card") && !b.hidden);
+    expect(samples.length).toBeGreaterThan(0);
+    expect(getPlaceholderBlocks(a.draft.blocks)).toHaveLength(samples.length);
   });
 
   it("renders no empty social handles or empty embeds publicly", () => {

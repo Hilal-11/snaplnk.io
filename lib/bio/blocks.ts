@@ -31,6 +31,13 @@ const blockBase = {
 
 // ---------- block types ----------
 
+/** Icon shown next to a link (card layout). "auto" / missing = inferred from the URL host. */
+export const LINK_ICONS = [
+  "auto", "link", "globe", "github", "spotify", "behance", "dribbble", "figma", "youtube",
+  "instagram", "x", "linkedin", "mail", "message", "music", "shop", "calendar", "book",
+] as const;
+export type LinkIcon = (typeof LINK_ICONS)[number];
+
 export const linkBlockSchema = z.object({
   ...blockBase,
   type: z.literal("link"),
@@ -38,6 +45,7 @@ export const linkBlockSchema = z.object({
   url: safeUrl,
   highlight: z.boolean().optional(),
   badge: z.string().trim().min(1).max(16).optional(),
+  icon: z.enum(LINK_ICONS).optional(),
   /** Template sample link — publishing is blocked until the user replaces it. */
   placeholder: z.boolean().optional(),
   show_from: z.iso.datetime().optional(),
@@ -99,6 +107,9 @@ export const contactCardBlockSchema = z.object({
   email: z.union([z.literal(""), z.email().max(254)]),
   company: z.string().trim().max(80),
   website: optionalSafeUrl,
+  address: z.string().trim().max(120).optional(),
+  /** Template sample details — publishing is blocked until the user edits them. */
+  placeholder: z.boolean().optional(),
 });
 
 export const blockSchema = z.discriminatedUnion("type", [
@@ -142,7 +153,9 @@ export type BioDocument = z.infer<typeof bioDocumentSchema>;
  * TODO(Phase 5): call this from POST /api/bio/pages/[id]/publish and return them as blocking errors.
  */
 export function getPlaceholderBlocks(blocks: readonly Block[]): Block[] {
-  return blocks.filter((b) => b.type === "link" && b.placeholder === true && !b.hidden);
+  return blocks.filter(
+    (b) => (b.type === "link" || b.type === "contact_card") && b.placeholder === true && !b.hidden
+  );
 }
 
 /**
@@ -150,7 +163,11 @@ export function getPlaceholderBlocks(blocks: readonly Block[]): Block[] {
  * out-of-schedule links and empty social handles are dropped. Social blocks with no
  * filled items disappear entirely.
  */
-export function getRenderableBlocks(blocks: readonly Block[], now: Date = new Date()): Block[] {
+export function getRenderableBlocks(
+  blocks: readonly Block[],
+  now: Date = new Date(),
+  opts: { keepEmptySocials?: boolean } = {}
+): Block[] {
   const out: Block[] = [];
   for (const b of blocks) {
     if (b.hidden) continue;
@@ -159,13 +176,14 @@ export function getRenderableBlocks(blocks: readonly Block[], now: Date = new Da
         if (!b.url) continue;
         break;
       case "social": {
-        const items = b.items.filter((i) => i.handle.length > 0);
+        // Editor/template previews keep empty handles (drawn dimmed) so the layout is visible.
+        const items = opts.keepEmptySocials ? b.items : b.items.filter((i) => i.handle.length > 0);
         if (items.length === 0) continue;
         out.push({ ...b, items });
         continue;
       }
       case "contact_card":
-        if (!b.name && !b.phone && !b.email && !b.company && !b.website) continue;
+        if (!b.name && !b.phone && !b.email && !b.company && !b.website && !b.address) continue;
         break;
       case "link":
         if (b.show_from && new Date(b.show_from) > now) continue;
@@ -213,7 +231,7 @@ export function createDefaultBlock(type: BlockType): Block {
     case "embed":
       return { id, type, url: "" };
     case "contact_card":
-      return { id, type, title: "Save my contact", name: "", phone: "", email: "", company: "", website: "" };
+      return { id, type, title: "Save my contact", name: "", phone: "", email: "", company: "", website: "", address: "" };
   }
 }
 

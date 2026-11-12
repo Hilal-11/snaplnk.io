@@ -52,13 +52,13 @@ export default async function PublicBioPage({ params }: Params) {
 
   const { profile, theme, doc } = page.snapshot;
   return (
-    <div className="min-h-screen w-full">
-      <BioRenderer
-        profile={{ displayName: profile.display_name, bio: profile.bio }}
-        theme={theme}
-        blocks={doc.blocks}
-        mode="public"
-      />
-    </div>
+    <BioRenderer
+      profile={{ displayName: profile.display_name, bio: profile.bio }}
+      theme={theme}
+      blocks={doc.blocks}
+      username={page.username}
+      mode="public"
+      frame="device"
+    />
   );
 }

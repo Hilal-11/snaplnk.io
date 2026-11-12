@@ -2,7 +2,7 @@
 // Bio page theme tokens (stored in bio_pages.theme). Rendered as CSS variables on .bio-root.
 import { z } from "zod";
 import { BIO_FONT_IDS } from "./fonts";
-import { WCAG_AA_NORMAL, composite, contrastRatio, mix, parseHex } from "./contrast";
+import { WCAG_AA_NORMAL, composite, contrastRatio, mix, parseHex, relativeLuminance } from "./contrast";
 
 /** #rrggbb or #rrggbbaa (alpha used for translucent "soft" buttons). */
 export const hexColor = z
@@ -47,7 +47,11 @@ export const themeSchema = z.object({
   layout: z.object({
     width: z.enum(["narrow", "normal", "wide"]),
     spacing: z.enum(["compact", "comfortable", "airy"]),
+    /** classic = centred buttons · cover = banner + big avatar + contact rows · card = profile card + link rows */
+    variant: z.enum(["classic", "cover", "card"]).default("classic"),
   }),
+  /** Banner colour for the "cover" layout. */
+  cover: opaqueHex.optional(),
 });
 
 export type Theme = z.infer<typeof themeSchema>;
@@ -86,15 +90,22 @@ export function getThemeContrastIssues(theme: ThemeInput, required = WCAG_AA_NOR
   return issues;
 }
 
-/** Theme for blank pages (same look as the "Minimal" template). */
+/** Theme for blank pages: the light "Link Hub" card look. */
 export const DEFAULT_THEME: ThemeInput = {
-  background: { type: "solid", color: "#fafafa" },
-  text: { color: "#111111", muted: "#525252", accent: "#111111" },
-  font: { heading: "inter", body: "inter" },
-  button: { style: "fill", radius: 12, bg: "#111111", fg: "#ffffff", border: "#111111" },
-  avatar: { shape: "circle" },
-  layout: { width: "narrow", spacing: "comfortable" },
+  background: { type: "solid", color: "#f2f3f5" },
+  text: { color: "#0a0a0a", muted: "#52525b", accent: "#0a0a0a" },
+  font: { heading: "geist", body: "geist" },
+  button: { style: "fill", radius: 14, bg: "#ffffff", fg: "#0a0a0a", border: "#e4e4e7" },
+  avatar: { shape: "rounded" },
+  layout: { width: "normal", spacing: "compact", variant: "card" },
 };
+
+/** True when the page background is dark (picks light logo / dim backdrop). */
+export function isDarkTheme(theme: ThemeInput): boolean {
+  const samples = backgroundSamples(theme);
+  const avg = samples.reduce((n, c) => n + relativeLuminance(c), 0) / samples.length;
+  return avg < 0.2;
+}
 
 /** Parses a stored theme, falling back to DEFAULT_THEME if it is missing or invalid. */
 export function parseThemeOrDefault(value: unknown): Theme {

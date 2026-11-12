@@ -28,8 +28,11 @@ export function validateForPublish(input: { displayName: string; theme: unknown;
 
   if (doc.success) {
     for (const b of getPlaceholderBlocks(doc.data.blocks)) {
-      const title = b.type === "link" ? `"${b.title}"` : BLOCK_TYPE_LABELS[b.type];
-      errors.push({ message: `${title} still uses a sample link. Replace its URL or hide it.`, blockId: b.id });
+      const message =
+        b.type === "link"
+          ? `"${b.title}" still uses a sample link. Replace its URL or hide it.`
+          : `${BLOCK_TYPE_LABELS[b.type]} still has sample details. Edit them or hide the block.`;
+      errors.push({ message, blockId: b.id });
     }
     if (getRenderableBlocks(doc.data.blocks).length === 0) {
       errors.push({ message: "Add at least one visible block." });

@@ -1,7 +1,7 @@
 "use client";
 
 import { FiAlertTriangle, FiCheck } from "react-icons/fi";
-import { TEMPLATES } from "@/lib/bio/templates";
+import { THEME_PRESETS } from "@/lib/bio/templates";
 import { BIO_FONT_IDS, BIO_FONT_LABELS, type BioFontId } from "@/lib/bio/fonts";
 import { getThemeContrastIssues, themeSchema, type ThemeInput } from "@/lib/bio/theme";
 import { stableStringify } from "@/lib/bio/snapshot";
@@ -68,7 +68,7 @@ function ColorField({
   const valid = allowAlpha ? /^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(value) : HEX6.test(value);
   return (
     <Field label={label}>
-      <div className={`flex items-center gap-2 rounded-lg border bg-neutral-50 px-2 py-1.5 ${valid ? "border-neutral-200" : "border-amber-400"}`}>
+      <div className={`flex items-center gap-2 rounded-lg border bg-neutral-50 px-2 py-1.5 ${valid ? "border-neutral-200" : "border-orange-400"}`}>
         <input
           type="color"
           value={HEX6.test(base) ? base : "#000000"}
@@ -101,8 +101,8 @@ export default function DesignPanel({ theme, onChange }: Props) {
     <div className="space-y-5">
       {/* Presets */}
       <Section title="Theme presets">
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-          {TEMPLATES.map((t) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {THEME_PRESETS.map((t) => {
             const parsed = themeSchema.parse(t.theme);
             const active = stableStringify(parsed) === current;
             const bg =
@@ -142,7 +142,7 @@ export default function DesignPanel({ theme, onChange }: Props) {
       {/* Contrast */}
       <div
         className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-xs ${
-          issues.length ? "border-amber-100 bg-amber-50 text-amber-800" : "border-emerald-100 bg-emerald-50 text-emerald-800"
+          issues.length ? "border-orange-100 bg-orange-50 text-orange-800" : "border-emerald-100 bg-emerald-50 text-emerald-800"
         }`}
         aria-live="polite"
       >
@@ -286,6 +286,26 @@ export default function DesignPanel({ theme, onChange }: Props) {
 
       {/* Layout */}
       <Section title="Layout">
+        <Field label="Style">
+          <Segmented
+            label="Layout style"
+            value={theme.layout.variant ?? "classic"}
+            options={[
+              { value: "card", label: "Card" },
+              { value: "cover", label: "Cover" },
+              { value: "classic", label: "Classic" },
+            ]}
+            onChange={(variant) => set("layout", { ...theme.layout, variant })}
+          />
+        </Field>
+        <p className="mt-1.5 mb-4 text-[11px] text-neutral-400">
+          Card: profile card + icon link rows · Cover: banner, big avatar and contact rows · Classic: centred buttons.
+        </p>
+        {theme.layout.variant === "cover" && (
+          <div className="mb-4 grid gap-3 sm:grid-cols-3">
+            <ColorField label="Cover banner" value={theme.cover ?? "#e9dcc8"} onChange={(cover, c) => set("cover", cover, c)} />
+          </div>
+        )}
         <div className="flex flex-wrap gap-5">
           <Field label="Avatar">
             <Segmented

@@ -16,7 +16,7 @@ const BLANK: BioTemplate = {
   id: "blank",
   name: "Blank",
   category: "start fresh",
-  description: "An empty page with a clean light theme.",
+  description: "Start from scratch and build your own page.",
   profile: { displayName: "Your Name", bio: "" },
   theme: DEFAULT_THEME,
   blocks: [],
@@ -34,7 +34,7 @@ const withIds = (t: BioTemplate) =>
 
 export default function NewBioPage({ initialTemplate }: { initialTemplate: string }) {
   const router = useRouter();
-  const [templateId, setTemplateId] = useState(ALL.some((t) => t.id === initialTemplate) ? initialTemplate : "minimal");
+  const [templateId, setTemplateId] = useState(ALL.some((t) => t.id === initialTemplate) ? initialTemplate : "link-hub");
   const [username, setUsername] = useState("");
   const [availability, setAvailability] = useState<Availability>({ state: "idle" });
   const [creating, setCreating] = useState(false);
@@ -187,7 +187,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
               <span className="flex h-5 w-5 items-center justify-center rounded-md bg-brand text-[11px] font-bold text-white">2</span>
               Choose a template
             </p>
-            <div className="mt-3 grid grid-cols-3 sm:grid-cols-6 gap-2" role="radiogroup" aria-label="Template">
+            <div className="mt-3 grid grid-cols-3 gap-2 max-w-md" role="radiogroup" aria-label="Template">
               {ALL.map((t) => {
                 const active = t.id === templateId;
                 return (
@@ -202,7 +202,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
                     }`}
                   >
                     <div className="overflow-hidden rounded-md border border-neutral-100">
-                      <BioPreviewFrame width={74} aspect={1.35} profile={t.profile} theme={t.theme} blocks={withIds(t)} />
+                      <BioPreviewFrame width={96} aspect={1.35} profile={t.profile} theme={t.theme} blocks={withIds(t)} username="yourname" />
                     </div>
                     <span className={`text-[11px] font-semibold ${active ? "text-neutral-900" : "text-neutral-500"}`}>{t.name}</span>
                   </button>
@@ -233,6 +233,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
                     }}
                     theme={template.theme}
                     blocks={withIds(template)}
+                    username={availability.state === "available" ? availability.username : username || "yourname"}
                   />
                 </motion.div>
               </AnimatePresence>
