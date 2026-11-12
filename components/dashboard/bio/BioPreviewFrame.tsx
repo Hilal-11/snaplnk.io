@@ -21,9 +21,10 @@ export default function BioPreviewFrame({
       className={`relative overflow-hidden select-none ${className}`}
       style={{ width, height }}
     >
+      {/* Fixed (not min) height so the page background always fills the frame. */}
       <div
-        className="pointer-events-none absolute left-0 top-0 origin-top-left"
-        style={{ width: DEVICE_WIDTH, minHeight: height / scale, transform: `scale(${scale})` }}
+        className="pointer-events-none absolute left-0 top-0 flex origin-top-left flex-col overflow-hidden"
+        style={{ width: DEVICE_WIDTH, height: height / scale, transform: `scale(${scale})` }}
       >
         <BioRenderer mode="preview" showBranding={false} {...renderer} />
       </div>

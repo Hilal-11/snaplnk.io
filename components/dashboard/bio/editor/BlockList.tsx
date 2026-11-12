@@ -24,8 +24,10 @@ import {
 } from "react-icons/fi";
 import {
   BLOCK_TYPE_LABELS,
+  LINK_ICONS,
   SOCIAL_PLATFORMS,
   createDefaultBlock,
+  type LinkIcon,
   type Block,
   type BlockOfType,
   type BlockType,
@@ -363,37 +365,50 @@ function Inspector({ block, patch }: { block: Block; patch: (p: Partial<Block>, 
             />
           </Field>
           {block.url && (
-            <p className={`text-xs ${parsed ? "text-emerald-700" : "text-amber-700"}`}>
+            <p className={`text-xs ${parsed ? "text-emerald-700" : "text-orange-700"}`}>
               {parsed ? `✓ ${parsed.provider} embed detected` : "This URL isn't a supported embed — it won't be shown."}
             </p>
           )}
         </div>
       );
     }
-    case "contact_card":
+    case "contact_card": {
+      // Editing any detail confirms it is real, which clears the template placeholder flag.
+      const set = (p: Partial<BlockOfType<"contact_card">>) => patch({ ...p, placeholder: undefined } as Partial<Block>);
       return (
         <div className="grid gap-3 sm:grid-cols-2">
+          {block.placeholder && (
+            <p className="sm:col-span-2 rounded-lg bg-brand-soft px-2.5 py-1.5 text-xs font-medium text-brand">
+              These are sample details. Edit them to be able to publish.
+            </p>
+          )}
           <Field label="Button text">
-            <input value={block.title} maxLength={80} onChange={(e) => patch({ title: e.target.value })} className={inputCls} />
+            <input value={block.title} maxLength={80} onChange={(e) => set({ title: e.target.value })} className={inputCls} />
           </Field>
           <Field label="Name">
-            <input value={block.name} maxLength={80} onChange={(e) => patch({ name: e.target.value })} className={inputCls} />
+            <input value={block.name} maxLength={80} onChange={(e) => set({ name: e.target.value })} className={inputCls} />
           </Field>
           <Field label="Phone">
-            <input value={block.phone} maxLength={32} onChange={(e) => patch({ phone: e.target.value })} className={inputCls} placeholder="+91 98765 43210" />
+            <input value={block.phone} maxLength={32} onChange={(e) => set({ phone: e.target.value })} className={inputCls} placeholder="+91 98765 43210" />
           </Field>
           <Field label="Email">
-            <input value={block.email} onChange={(e) => patch({ email: e.target.value })} className={inputCls} placeholder="you@example.com" />
+            <input value={block.email} onChange={(e) => set({ email: e.target.value })} className={inputCls} placeholder="you@example.com" />
           </Field>
           <Field label="Company">
-            <input value={block.company} maxLength={80} onChange={(e) => patch({ company: e.target.value })} className={inputCls} />
+            <input value={block.company} maxLength={80} onChange={(e) => set({ company: e.target.value })} className={inputCls} />
           </Field>
           <Field label="Website">
-            <input value={block.website} onChange={(e) => patch({ website: e.target.value })} className={inputCls} placeholder="https://..." />
+            <input value={block.website} onChange={(e) => set({ website: e.target.value })} className={inputCls} placeholder="https://..." />
           </Field>
-          <p className="sm:col-span-2 text-[11px] text-neutral-400">Hidden on your page until at least one field is filled.</p>
+          <Field label="Address">
+            <input value={block.address ?? ""} maxLength={120} onChange={(e) => set({ address: e.target.value })} className={inputCls} placeholder="City, State" />
+          </Field>
+          <p className="sm:col-span-2 text-[11px] text-neutral-400">
+            Cover layout shows these as tap-to-call / email rows; other layouts show a “save contact” button. Hidden until a field is filled.
+          </p>
         </div>
       );
+    }
   }
 }
 
@@ -429,6 +444,19 @@ function LinkInspector({ block, patch }: { block: BlockOfType<"link">; patch: (p
         <div className="flex items-end pb-1.5">
           <Toggle checked={!!block.highlight} onChange={(v) => patch({ highlight: v || undefined } as Partial<Block>, false)} label="Highlight (gentle nudge)" />
         </div>
+        <Field label="Icon" hint="(card layout)">
+          <select
+            value={block.icon ?? "auto"}
+            onChange={(e) => patch({ icon: e.target.value === "auto" ? undefined : (e.target.value as LinkIcon) } as Partial<Block>, false)}
+            className={inputCls}
+          >
+            {LINK_ICONS.map((i) => (
+              <option key={i} value={i}>
+                {i === "auto" ? "Auto (from URL)" : i.charAt(0).toUpperCase() + i.slice(1)}
+              </option>
+            ))}
+          </select>
+        </Field>
       </div>
     </div>
   );
@@ -450,7 +478,7 @@ function SocialInspector({ block, patch }: { block: BlockOfType<"social">; patch
               value={item.handle}
               onChange={(e) => setItems(block.items.map((x, j) => (j === i ? { ...x, handle: e.target.value } : x)))}
               placeholder={SOCIAL_PLACEHOLDERS[item.platform]}
-              className={`${inputCls} ${item.handle && !url ? "border-amber-300" : ""}`}
+              className={`${inputCls} ${item.handle && !url ? "border-orange-300" : ""}`}
               aria-label={`${SOCIAL_LABELS[item.platform]} handle`}
             />
             <button
@@ -531,7 +559,7 @@ function BlockRow({
       whileDrag={{ scale: 1.015, boxShadow: "0 16px 32px -12px rgba(0,0,0,0.3)", zIndex: 10 }}
       transition={{ duration: 0.18 }}
       className={`relative overflow-hidden rounded-xl border bg-white transition-colors ${
-        flagged || err ? "border-amber-300" : isOpen ? "border-neutral-300" : "border-neutral-200"
+        flagged || err ? "border-orange-300" : isOpen ? "border-neutral-300" : "border-neutral-200"
       } ${b.hidden ? "bg-neutral-50" : ""}`}
     >
       <div className="flex items-center gap-2 px-2.5 py-2">
@@ -584,7 +612,7 @@ function BlockRow({
       </div>
 
       {err && !isOpen && (
-        <p className="flex items-center gap-1.5 border-t border-amber-100 bg-amber-50 px-3 py-1.5 text-xs text-amber-800">
+        <p className="flex items-center gap-1.5 border-t border-orange-100 bg-orange-50 px-3 py-1.5 text-xs text-orange-800">
           <FiAlertTriangle size={12} /> {err}
         </p>
       )}
@@ -600,7 +628,7 @@ function BlockRow({
           >
             <div className="border-t border-neutral-100 p-3.5">
               {err && (
-                <p className="mb-3 flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1.5 text-xs text-amber-800">
+                <p className="mb-3 flex items-center gap-1.5 rounded-lg bg-orange-50 px-2.5 py-1.5 text-xs text-orange-800">
                   <FiAlertTriangle size={12} /> {err}
                 </p>
               )}

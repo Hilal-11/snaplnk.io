@@ -5,8 +5,8 @@ import { getLinkStatus } from "./utils";
 const STYLES = {
   active: { label: "Active", icon: FiCheckCircle, cls: "text-emerald-700 bg-emerald-50 border-emerald-100" },
   disabled: { label: "Disabled", icon: FiPauseCircle, cls: "text-neutral-500 bg-neutral-50 border-neutral-200" },
-  expired: { label: "Expired", icon: FiAlertCircle, cls: "text-amber-700 bg-amber-50 border-amber-100" },
-  limit: { label: "Limit reached", icon: FiAlertCircle, cls: "text-amber-700 bg-amber-50 border-amber-100" },
+  expired: { label: "Expired", icon: FiAlertCircle, cls: "text-orange-700 bg-orange-50 border-orange-100" },
+  limit: { label: "Limit reached", icon: FiAlertCircle, cls: "text-orange-700 bg-orange-50 border-orange-100" },
   hidden: { label: "Hidden", icon: FiEyeOff, cls: "text-neutral-500 bg-neutral-100 border-neutral-200" },
 } as const;
 

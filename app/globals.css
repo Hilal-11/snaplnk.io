@@ -192,9 +192,11 @@ html.dark {
   --color-red-300: oklch(0.72 0.14 25);
   --color-red-600: oklch(0.68 0.19 25);
   --color-red-700: oklch(0.6 0.2 25);
-  --color-amber-50: oklch(0.28 0.05 75);
-  --color-amber-100: oklch(0.34 0.07 75);
-  --color-amber-700: oklch(0.83 0.14 80);
+  --color-orange-50: oklch(0.27 0.06 45);
+  --color-orange-100: oklch(0.33 0.08 45);
+  --color-orange-200: oklch(0.4 0.1 45);
+  --color-orange-700: oklch(0.8 0.14 50);
+  --color-orange-800: oklch(0.86 0.11 55);
 }
 
 /* =========================================================================

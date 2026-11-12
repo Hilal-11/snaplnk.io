@@ -316,7 +316,7 @@ export default function BioEditor({
     saved: { text: "Saved", cls: "text-neutral-500", icon: <FiCheck /> },
     unsaved: { text: "Unsaved", cls: "text-neutral-500", icon: <FiCloud /> },
     saving: { text: "Saving...", cls: "text-neutral-500", icon: <Spinner className="size-3" /> },
-    invalid: { text: "Fix errors to save", cls: "text-amber-700", icon: <FiAlertTriangle /> },
+    invalid: { text: "Fix errors to save", cls: "text-orange-700", icon: <FiAlertTriangle /> },
     error: { text: "Save failed", cls: "text-red-600", icon: <FiAlertTriangle /> },
     conflict: { text: "Edited in another tab", cls: "text-red-600", icon: <FiAlertTriangle /> },
   };
@@ -428,7 +428,7 @@ export default function BioEditor({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             className={`mb-4 rounded-xl border p-4 text-sm ${
-              publishIssues.errors.length ? "border-amber-100 bg-amber-50" : "border-neutral-200 bg-white"
+              publishIssues.errors.length ? "border-orange-100 bg-orange-50" : "border-neutral-200 bg-white"
             }`}
           >
             <div className="flex items-start justify-between gap-3">
@@ -443,7 +443,7 @@ export default function BioEditor({
             </div>
             <ul className="mt-2 space-y-1">
               {publishIssues.errors.map((e, i) => (
-                <li key={`e${i}`} className="flex items-start gap-2 text-amber-800">
+                <li key={`e${i}`} className="flex items-start gap-2 text-orange-800">
                   <FiAlertTriangle className="mt-0.5 shrink-0" /> {e.message}
                 </li>
               ))}
@@ -497,7 +497,7 @@ export default function BioEditor({
           </div>
 
           {errors.general.length > 0 && (
-            <div className="mb-4 rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            <div className="mb-4 rounded-lg border border-orange-100 bg-orange-50 px-3 py-2 text-xs text-orange-800">
               {errors.general.map((g) => (
                 <p key={g}>{g}</p>
               ))}
@@ -521,7 +521,7 @@ export default function BioEditor({
                   <FiCheckCircle /> Live
                 </span>
               ) : isPublished ? (
-                <span className="text-amber-700">Unpublished changes</span>
+                <span className="text-orange-700">Unpublished changes</span>
               ) : (
                 <span>Draft</span>
               )}
@@ -534,6 +534,7 @@ export default function BioEditor({
                     profile={{ displayName: doc.displayName, bio: doc.bio }}
                     theme={doc.theme}
                     blocks={doc.blocks}
+                    username={page.username}
                     flaggedBlockIds={flaggedIds}
                   />
                 </div>
