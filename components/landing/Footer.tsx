@@ -36,8 +36,10 @@ export default function Footer() {
 
           {/* Right: Social */}
           <div className="flex items-center gap-3">
-            <Link href="https://hilal-11.github.io/portfolio/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 border text-neutral-500 hover:bg-neutral-800 hover:text-white transition-all" title="Website"><FaGlobe className="text-sm" /></Link>
+            <Link href="https://hila-11.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 border text-neutral-500 hover:bg-neutral-800 hover:text-white transition-all" title="Website"><FaGlobe className="text-sm" /></Link>
+
             <Link href="https://github.com/hilal-11" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 border text-neutral-500 hover:bg-neutral-800 hover:text-white transition-all" title="GitHub"><FaGithub className="text-sm" /></Link>
+
             <Link href="https://x.com/Hilal3884871845" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 border text-neutral-500 hover:bg-neutral-800 hover:text-white transition-all" title="X"><SiX className="text-sm" /></Link>
             <Link href="https://www.linkedin.com/in/hilal-ahmad-ab5466347/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 border text-neutral-500 hover:bg-neutral-800 hover:text-white transition-all" title="LinkedIn"><FaLinkedin className="text-sm" /></Link>
             <Link href="https://leetcode.com/u/hilal-11/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 border text-neutral-500 hover:bg-neutral-800 hover:text-white transition-all" title="LeetCode"><SiLeetcode className="text-sm" /></Link>
@@ -48,8 +50,8 @@ export default function Footer() {
         {/* Bottom line */}
         <div className="mt-6 pt-4 border-t border-neutral-100 text-center">
           <p className="text-[11px] text-neutral-400">
-            Built by <a href="https://github.com/hilal-11" target="_blank" rel="noopener noreferrer" className="font-medium text-neutral-500 hover:text-neutral-700">Hilal Ahmad</a> · Powered by{" "}
-            <Link href="https://lokalhost-io-i2di.vercel.app/" target="_blank" rel="noopener noreferrer" className="font-medium text-neutral-500 hover:text-neutral-700">lokalhost.io</Link>
+            Built by <a href="https://hila-11.com" target="_blank" rel="noopener noreferrer" className="font-medium text-neutral-500 hover:text-neutral-700">Hilal Ahmad</a> · Powered by{" "}
+            <Link href="https://lokalhost-io-eta.vercel.app/" target="_blank" rel="noopener noreferrer" className="font-medium text-neutral-500 hover:text-neutral-700">lokalhost.io</Link>
           </p>
         </div>
       </div>
