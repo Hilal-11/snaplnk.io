@@ -53,9 +53,6 @@ const navGroups = [
   {
     label: "Account",
     items: [
-      { href: "/dashboard/team", label: "Team", icon: FiUsers, disabled: true },
-      { href: "/dashboard/api-keys", label: "API Keys", icon: FiKey, disabled: true },
-      { href: "/dashboard/billing", label: "Billing", icon: FiCreditCard, disabled: true },
       { href: "/dashboard/settings", label: "Settings", icon: FiSettings },
     ],
   },
@@ -66,7 +63,6 @@ const ExternalPages = [
     items: [
       { href: "/pricing", label: "Pricing", icon: MdOutlinePriceChange },
       { href: "/usage", label: "Usage", icon: MdOutlineDataUsage },
-      { href: "/docs", label: "API's", icon: TiDocumentText },
       { href: "/faqs", label: "FAQ's", icon: IoListSharp },
       { href: "/blogs", label: "Blogs", icon: LiaBlogSolid },
       { href: "https://hila-11.com", label: "Lokalhost.io", icon: BiSolidTerminal },
