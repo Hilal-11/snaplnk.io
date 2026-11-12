@@ -3,12 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { FiArrowLeft, FiGrid, FiLogOut, FiShield } from "react-icons/fi";
+import { FiActivity, FiAlertTriangle, FiArrowLeft, FiFileText, FiGrid, FiLink, FiLogOut, FiMessageSquare, FiShield, FiUsers } from "react-icons/fi";
 import Logo from "@/components/Logo";
 import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
 
-// Pages are added here as each phase ships.
-const NAV = [{ href: "/admin", label: "Overview", icon: FiGrid }];
+const NAV = [
+  { href: "/admin", label: "Overview", icon: FiGrid },
+  { href: "/admin/users", label: "Users", icon: FiUsers },
+  { href: "/admin/links", label: "Links", icon: FiLink },
+  { href: "/admin/bio-pages", label: "Bio pages", icon: FiFileText },
+  { href: "/admin/events", label: "Events", icon: FiActivity },
+  { href: "/admin/errors", label: "Errors", icon: FiAlertTriangle },
+  { href: "/admin/feedback", label: "Feedback", icon: FiMessageSquare },
+  { href: "/admin/audit", label: "Audit log", icon: FiShield },
+];
 
 export default function AdminShell({ email, children }: { email: string; children: React.ReactNode }) {
   const pathname = usePathname();
@@ -73,6 +81,16 @@ export default function AdminShell({ email, children }: { email: string; childre
             </button>
           </form>
         </header>
+        <nav className="flex gap-1 overflow-x-auto border-b border-neutral-200 bg-white px-3 py-2 scrollbar-hide lg:hidden" aria-label="Admin sections">
+          {NAV.map((item) => {
+            const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href + "/"));
+            return (
+              <Link key={item.href} href={item.href} className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold ${active ? "btn-primary text-white" : "text-neutral-600"}`}>
+                <item.icon size={13} /> {item.label}
+              </Link>
+            );
+          })}
+        </nav>
         <main className="relative flex-1 p-4 lg:p-8">
           <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-grid mask-fade-radial" />
           <div className="relative">{children}</div>
