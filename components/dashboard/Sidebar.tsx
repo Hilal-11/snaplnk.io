@@ -147,14 +147,6 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
                       <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-0.5">
                         {item.label}
                       </span>
-                      {isActive && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.08 }}
-                          className="relative z-10 ml-auto h-1.5 w-1.5 rounded-full bg-brand shadow-[0_0_8px_var(--brand-glow)]"
-                        />
-                      )}
                     </Link>
                   </li>
                 );
