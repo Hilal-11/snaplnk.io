@@ -49,7 +49,6 @@ const BLANK: BioTemplate = {
 
 export default function BioPagesView() {
   const [pages, setPages] = useState<PageRow[]>([]);
-  const [maxPages, setMaxPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -66,7 +65,6 @@ export default function BioPagesView() {
       .then((json) => {
         if (cancelled) return;
         setPages(json.data ?? []);
-        setMaxPages(json.limits?.maxPages ?? 1);
       })
       .catch((e: Error) => !cancelled && setError(e.message))
       .finally(() => !cancelled && setLoading(false));
@@ -86,7 +84,6 @@ export default function BioPagesView() {
   const visiblePages = pages.filter(
     (p) => !q || p.username.includes(q) || p.display_name.toLowerCase().includes(q)
   );
-  const atLimit = pages.length >= maxPages;
 
   return (
     <div className="max-w-full mx-auto">
@@ -106,7 +103,7 @@ export default function BioPagesView() {
           <span className="h-1.5 w-1.5 rounded-full bg-brand" /> Your pages
           {!loading && (
             <span className="text-xs font-medium text-neutral-400">
-              {pages.length}/{maxPages} on your plan
+              {pages.length} page{pages.length === 1 ? "" : "s"} · unlimited & free
             </span>
           )}
         </h2>
@@ -148,13 +145,10 @@ export default function BioPagesView() {
             <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-900">
               <span className="h-1.5 w-1.5 rounded-full bg-brand" /> Start from a template
             </h2>
-            <p className="text-xs text-neutral-500 mt-0.5">Every template is free. You can change everything after.</p>
-          </div>
-          {atLimit && !loading && (
-            <p className="text-xs font-medium text-neutral-500">
-              You&apos;ve used all {maxPages} page{maxPages === 1 ? "" : "s"} on your plan — delete one to start over.
+            <p className="text-xs text-neutral-500 mt-0.5">
+              Every template is free and you can create as many pages as you like. Change everything after.
             </p>
-          )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -188,20 +182,14 @@ export default function BioPagesView() {
                 </div>
                 <p className="mt-1 text-xs leading-relaxed text-neutral-500">{t.description}</p>
                 <div className="mt-auto pt-4">
-                  {atLimit ? (
-                    <span className="flex w-full cursor-not-allowed items-center justify-center rounded-lg border border-neutral-200 py-2 text-sm font-semibold text-neutral-400">
-                      Page limit reached
-                    </span>
-                  ) : (
-                    <Link
-                      href={`/dashboard/bio-pages/new?template=${t.id}`}
-                      className="group/btn flex w-full items-center justify-center gap-1.5 rounded-lg btn-primary py-2 text-sm font-semibold text-white"
-                    >
-                      {t.id === "blank" ? <FiPlus size={14} /> : null}
-                      {t.id === "blank" ? "Start blank" : "Use this template"}
-                      <FiArrowRight size={14} className="transition-transform group-hover/btn:translate-x-0.5" />
-                    </Link>
-                  )}
+                  <Link
+                    href={`/dashboard/bio-pages/new?template=${t.id}`}
+                    className="group/btn flex w-full items-center justify-center gap-1.5 rounded-lg btn-primary py-2 text-sm font-semibold text-white"
+                  >
+                    {t.id === "blank" ? <FiPlus size={14} /> : null}
+                    {t.id === "blank" ? "Start blank" : "Use this template"}
+                    <FiArrowRight size={14} className="transition-transform group-hover/btn:translate-x-0.5" />
+                  </Link>
                 </div>
               </div>
             </motion.div>

@@ -5,8 +5,8 @@
 export type PlanId = "free" | "pro";
 
 export interface BioPlanLimits {
-  /** Bio pages a user may own. */
-  maxPages: number;
+  /** Bio pages a user may own. null = unlimited (bio pages are free). */
+  maxPages: number | null;
   /** Blocks per page (draft and published). */
   maxBlocks: number;
   /** Images per gallery block. */
@@ -27,7 +27,7 @@ export interface BioPlanLimits {
 
 export const BIO_PLANS: Readonly<Record<PlanId, Readonly<BioPlanLimits>>> = {
   free: {
-    maxPages: 1,
+    maxPages: null,
     maxBlocks: 30,
     maxGalleryImages: 4,
     maxImageBytes: 2 * 1024 * 1024,
@@ -38,7 +38,7 @@ export const BIO_PLANS: Readonly<Record<PlanId, Readonly<BioPlanLimits>>> = {
     removeBranding: false,
   },
   pro: {
-    maxPages: 5,
+    maxPages: null,
     maxBlocks: 200,
     maxGalleryImages: 8,
     maxImageBytes: 5 * 1024 * 1024,
