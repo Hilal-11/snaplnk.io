@@ -95,7 +95,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const isGuest = user.is_anonymous === true;
+  // Creating links requires a real (signed-up) account — no guest/anonymous links.
+  if (user.is_anonymous) {
+    return Response.json({ error: "Sign up to create short links." }, { status: 403 });
+  }
+  const isGuest = false;
 
   // 1) Rate limit FIRST — cheapest check, before any parsing or DB work
   const rl = await limitLinkCreation({

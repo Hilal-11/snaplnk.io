@@ -9,11 +9,14 @@ import { HiOutlineExternalLink } from "react-icons/hi";
 import { FiArrowRight, FiEdit3 } from "react-icons/fi";
 import { FaLocationArrow } from "react-icons/fa6";
 import { IoInfiniteSharp } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import { signupForUrl } from "@/lib/safeNext";
 export default function Hero() {
    const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shortUrl, setShortUrl] = useState<string | null>(null);
+  const router = useRouter();
   
   async function handleCreate() {
     setError(null);
@@ -26,24 +29,16 @@ export default function Hero() {
 
     setLoading(true);
     try {
-      // Guests can create links too — sign in anonymously first so the
-      // link gets saved to a real account they can claim later.
+      // Only signed-up users can create links. Everyone else goes to sign up,
+      // and comes back to the create form with their URL already filled in.
       const supabase = createClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (!user) {
-        const { error: anonError } = await supabase.auth.signInAnonymously();
-        if (anonError) {
-          console.error("Anonymous sign-in failed:", {
-            message: anonError.message,
-            status: anonError.status,
-            code: anonError.code,
-          });
-          setError(`Guest links unavailable: ${anonError.message}`);
-          return;
-        }
+      if (!user || user.is_anonymous) {
+        router.push(signupForUrl(url));
+        return;
       }
 
       const res = await fetch("/api/links", {
@@ -54,6 +49,10 @@ export default function Hero() {
 
       const json = await res.json();
 
+      if (res.status === 401 || res.status === 403) {
+        router.push(signupForUrl(url));
+        return;
+      }
       if (!res.ok) {
         setError(json.error ?? "Something went wrong.");
         return;

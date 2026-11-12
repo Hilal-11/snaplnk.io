@@ -15,6 +15,7 @@ import {
 import { IoIosArrowRoundForward } from 'react-icons/io'
 import { signIn, signUp, signInWithGithub, signInWithGoogle } from '@/app/auth/actions'
 import { useSearchParams } from 'next/navigation'
+import { safeNext } from '@/lib/safeNext'
 import { HiArrowLeft } from 'react-icons/hi'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -74,7 +75,7 @@ function SocialButton({
 }: {
   icon: React.ReactNode
   label: string
-  action: () => void
+  action: () => Promise<void>
 }) {
   return (
     <motion.div variants={socialItem}>
@@ -132,6 +133,11 @@ export default function LoginPage() {
 
   const searchParams  = useSearchParams()
   const hasAuthError  = searchParams.get('error') === 'auth'
+  // Where to go after signing in (e.g. back to the create form with the pasted URL).
+  const next = safeNext(searchParams.get('next'))
+  const pendingUrl = next.startsWith('/dashboard/links/new?url=')
+    ? new URLSearchParams(next.split('?')[1]).get('url')
+    : null
   const router = useRouter()
 
   const validate = (): boolean => {
@@ -157,6 +163,7 @@ export default function LoginPage() {
     setMessage(null)
 
     const formData = new FormData(e.currentTarget)
+    formData.set('next', next)
     const result   = mode === 'signin' ? await signIn(formData) : await signUp(formData)
 
   if (result?.error)             setMessage({ type: 'error',   text: result.error })
@@ -213,6 +220,17 @@ if (result && 'success' in result) setMessage({ type: 'success', text: result.su
                 </p>
               </motion.div>
 
+              {/* Came from the landing page with a URL to shorten */}
+              {pendingUrl && (
+                <div className="mb-4 rounded-xl border border-orange-100 bg-orange-50 px-4 py-3 font-sans text-sm text-orange-700">
+                  <p className="font-semibold">Sign up to create your short link</p>
+                  <p className="mt-0.5 truncate text-xs opacity-80" title={pendingUrl}>
+                    {pendingUrl}
+                  </p>
+                  <p className="mt-1 text-xs opacity-80">We&apos;ll take you straight to it once you&apos;re in — it&apos;s free.</p>
+                </div>
+              )}
+
               {/* Auth error from callback */}
               <AnimatePresence>
                 {hasAuthError && (
@@ -247,8 +265,8 @@ if (result && 'success' in result) setMessage({ type: 'success', text: result.su
 
               {/* Social buttons */}
               <motion.div variants={socialStagger} className="space-y-3">
-                <SocialButton icon={<FcGoogle />} label="Continue with Google" action={signInWithGoogle} />
-                <SocialButton icon={<FaGithub />} label="Continue with GitHub" action={signInWithGithub} />
+                <SocialButton icon={<FcGoogle />} label="Continue with Google" action={async () => { await signInWithGoogle(next) }} />
+                <SocialButton icon={<FaGithub />} label="Continue with GitHub" action={async () => { await signInWithGithub(next) }} />
               </motion.div>
 
               {/* Divider */}

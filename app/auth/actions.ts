@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { safeNext } from "@/lib/safeNext";
 
 const getURL = () => {
   const url =
@@ -15,11 +16,12 @@ const getURL = () => {
 // ── Email + Password ───────────────────────────────────────────────────────
 export async function signUp(formData: FormData) {
   const supabase = await createClient();
+  const next = safeNext(formData.get("next"), "/dashboard/links");
   const { error } = await supabase.auth.signUp({
     email: formData.get("email") as string,
     password: formData.get("password") as string,
     options: {
-      emailRedirectTo: `${getURL()}/auth/callback?next=/dashboard/links`,
+      emailRedirectTo: `${getURL()}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
   if (error) return { error: error.message };
@@ -33,7 +35,7 @@ export async function signIn(formData: FormData) {
     password: formData.get("password") as string,
   });
   if (error) return { error: error.message };
-  redirect("/dashboard");
+  redirect(safeNext(formData.get("next")));
 }
 
 export async function signOut() {
@@ -43,24 +45,24 @@ export async function signOut() {
 }
 
 // ── OAuth ──────────────────────────────────────────────────────────────────
-export async function signInWithGithub() {
+export async function signInWithGithub(next?: unknown) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: `${getURL()}/auth/callback?next=/dashboard`,
+      redirectTo: `${getURL()}/auth/callback?next=${encodeURIComponent(safeNext(next))}`,
     },
   });
   if (error) return { error: error.message };
   if (data.url) redirect(data.url);
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(next?: unknown) {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${getURL()}/auth/callback?next=/dashboard`,
+      redirectTo: `${getURL()}/auth/callback?next=${encodeURIComponent(safeNext(next))}`,
     },
   });
   if (error) return { error: error.message };
