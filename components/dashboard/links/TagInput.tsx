@@ -65,11 +65,14 @@ export function InlineTags({
   onChange,
   onTagClick,
   compact,
+  readOnly,
 }: {
   tags: string[];
   onChange: (tags: string[]) => void;
   onTagClick?: (tag: string) => void;
   compact?: boolean;
+  /** Show tags without add/remove controls (e.g. links in the trash). */
+  readOnly?: boolean;
 }) {
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState("");
@@ -100,18 +103,18 @@ export function InlineTags({
           >
             {tag}
           </button>
-          <button
+          {!readOnly && <button
             type="button"
             onClick={() => onChange(tags.filter((t) => t !== tag))}
             className="opacity-0 group-hover/tag:opacity-100 focus:opacity-100 p-0.5 rounded-md text-neutral-400 hover:text-neutral-900 transition-opacity"
             aria-label={`Remove tag ${tag}`}
           >
             <FiX size={10} />
-          </button>
+          </button>}
         </span>
       ))}
       {hidden > 0 && <span className="text-[11px] font-medium text-neutral-400">+{hidden}</span>}
-      {adding ? (
+      {readOnly ? null : adding ? (
         <input
           autoFocus
           value={draft}
