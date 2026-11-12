@@ -51,18 +51,21 @@ export async function POST(request: Request) {
   }
   const { username, template_id } = parsed.data;
 
-  // Plan limit (server-side; the UI only mirrors it).
-  const limits = getPlanLimits(null);
-  const { count, error: countError } = await supabase
-    .from("bio_pages")
-    .select("id", { count: "exact", head: true })
-    .eq("owner", user.id);
-  if (countError) {
-    console.error("[POST /api/bio/pages] count", countError);
-    return jsonError(500, "Failed to create page");
-  }
-  if ((count ?? 0) >= limits.maxPages) {
-    return jsonError(403, `Your plan includes ${limits.maxPages} bio page${limits.maxPages === 1 ? "" : "s"}. Upgrade to Pro for more.`);
+  // Page limit (server-side). Bio pages are free and unlimited today (maxPages = null);
+  // abuse is bounded by the "create" rate limit above.
+  const { maxPages } = getPlanLimits(null);
+  if (maxPages !== null) {
+    const { count, error: countError } = await supabase
+      .from("bio_pages")
+      .select("id", { count: "exact", head: true })
+      .eq("owner", user.id);
+    if (countError) {
+      console.error("[POST /api/bio/pages] count", countError);
+      return jsonError(500, "Failed to create page");
+    }
+    if ((count ?? 0) >= maxPages) {
+      return jsonError(403, `You can have up to ${maxPages} bio page${maxPages === 1 ? "" : "s"}.`);
+    }
   }
 
   const applied =
