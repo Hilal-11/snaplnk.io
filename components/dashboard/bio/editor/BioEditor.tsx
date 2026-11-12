@@ -344,7 +344,7 @@ export default function BioEditor({
               }}
               className="flex items-center gap-1 font-semibold text-blue-600 hover:underline"
             >
-              {publicHost} {copied ? <FiCheck className="text-emerald-600" /> : <FiCopy size={11} />}
+              {publicHost} {copied ? <FiCheck className="text-orange-600" /> : <FiCopy size={11} />}
             </button>
             <span className={`flex items-center gap-1 ${s.cls}`} aria-live="polite">
               {s.icon} {s.text}

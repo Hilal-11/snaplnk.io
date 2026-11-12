@@ -147,7 +147,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
               />
               <span className="pr-3">
                 {availability.state === "checking" && <Spinner className="size-4 text-neutral-400" />}
-                {availability.state === "available" && <FiCheck className="text-emerald-600" />}
+                {availability.state === "available" && <FiCheck className="text-orange-600" />}
                 {availability.state === "unavailable" && <FiX className="text-red-500" />}
               </span>
             </div>
