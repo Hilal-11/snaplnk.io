@@ -10,6 +10,21 @@ export const HEADER_CONFIG:HeaderConfig[] = [
         link: "/dashboard"
     },
     {
+        id: 2,
+        header_title: "Short Links",
+        link: "/dashboard/links"
+    },
+    {
+        id: 3,
+        header_title: "QR Codes",
+        link: "/dashboard/qr-codes"
+    },
+    {
+        id: 3,
+        header_title: "Bio Pages",
+        link: "/dashboard/bio-pages"
+    },
+    {
         id: 123,
         header_title: "FAQ's",
         link: "/faqs"
@@ -20,13 +35,8 @@ export const HEADER_CONFIG:HeaderConfig[] = [
         link: "/pricing"
     },
     {
-        id: 11,
-        header_title: "API's",
-        link: "/"
-    },
-    {
         id: 422,
-        header_title: "Blogs",
-        link: "/blogs"
+        header_title: "Analytics",
+        link: "/dashboard/analytics"
     },
 ]
