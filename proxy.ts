@@ -7,6 +7,15 @@ import { ADMIN_COOKIE, getAdminEmails } from "@/lib/admin/config";
 import { getAdminSecret, verifyAdminSession } from "@/lib/admin/session";
 
 export async function proxy(request: NextRequest) {
+  // If Supabase falls back to the Site URL (callback missing from its Redirect URLs list),
+  // the visitor lands on "/?code=…". Finish the sign-in instead of silently dropping it.
+  const { pathname, searchParams } = request.nextUrl;
+  if (pathname === "/" && (searchParams.has("code") || searchParams.has("token_hash") || searchParams.has("error_code"))) {
+    const to = request.nextUrl.clone();
+    to.pathname = "/auth/callback";
+    return NextResponse.redirect(to);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
