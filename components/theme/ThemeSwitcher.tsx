@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@/lib/analytics/client";
 import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { motion } from "motion/react";
@@ -34,7 +35,10 @@ export default function ThemeSwitcher({ layoutId = "theme-pill" }: { layoutId?: 
             type="button"
             role="radio"
             aria-checked={active}
-            onClick={() => setTheme(o.value)}
+            onClick={() => {
+              setTheme(o.value);
+              track("theme_toggle", { theme: o.value });
+            }}
             className={`group relative flex items-center justify-center gap-1 rounded-md px-1.5 py-1.5 text-[11px] font-semibold transition-colors ${
               active ? "text-neutral-900" : "text-neutral-500 hover:text-neutral-900"
             }`}

@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@/lib/analytics/client";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -287,6 +288,7 @@ export default function BioEditor({
       setHasChanges(false);
       if (json.warnings?.length) setPublishIssues({ errors: [], warnings: json.warnings });
       showToast("Published! Your page is live.");
+      track("bio_page_publish", { blocks: docRef.current.blocks.length });
     } finally {
       setPublishing(false);
     }

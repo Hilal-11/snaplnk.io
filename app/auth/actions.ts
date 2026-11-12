@@ -3,6 +3,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { safeNext } from "@/lib/safeNext";
+import { after } from "next/server";
+import { syncUserAccess } from "@/lib/admin/sync";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const getURL = () => {
   const url =
@@ -35,6 +38,19 @@ export async function signIn(formData: FormData) {
     password: formData.get("password") as string,
   });
   if (error) return { error: error.message };
+
+  // Promote/demote from ADMIN_EMAILS and refuse banned accounts.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    const access = await syncUserAccess(user);
+    if (access.banned) {
+      await supabase.auth.signOut();
+      return { error: "This account has been suspended." };
+    }
+    after(() => trackServerEvent(null, "login", { userId: user.id, path: "/signup", metadata: { provider: "email" } }));
+  }
   redirect(safeNext(formData.get("next")));
 }
 

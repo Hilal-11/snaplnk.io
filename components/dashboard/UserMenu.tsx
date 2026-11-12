@@ -1,5 +1,6 @@
 "use client";
 
+import { flush, track } from "@/lib/analytics/client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -29,6 +30,8 @@ export default function UserMenu() {
       : null;
 
   async function logOut() {
+    track("logout");
+    flush();
     setOpen(false);
     await createClient().auth.signOut();
     router.replace("/signup");

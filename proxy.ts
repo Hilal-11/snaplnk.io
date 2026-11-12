@@ -1,6 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getAccessRule } from "@/lib/bio/proxyRules";
+import { adminRouteRule } from "@/lib/admin/proxyRules";
+import { evaluateAdminAccess } from "@/lib/admin/access";
+import { ADMIN_COOKIE, getAdminEmails } from "@/lib/admin/config";
+import { getAdminSecret, verifyAdminSession } from "@/lib/admin/session";
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -28,6 +32,32 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const isRealUser = !!user && !user.is_anonymous;
+
+  // Admin area — layer 1 of 3 (the /admin layout and every admin API/action re-check).
+  const adminRule = adminRouteRule(request.nextUrl.pathname);
+  if (adminRule) {
+    const noindex = (res: NextResponse) => {
+      res.headers.set("X-Robots-Tag", "noindex, nofollow");
+      return res;
+    };
+    if (adminRule === "admin-login") return noindex(supabaseResponse);
+
+    const decision = evaluateAdminAccess({
+      user,
+      adminEmails: getAdminEmails(),
+      storedRole: typeof user?.app_metadata?.role === "string" ? user.app_metadata.role : null,
+      sessionValid: user
+        ? await verifyAdminSession(request.cookies.get(ADMIN_COOKIE)?.value, user.id, getAdminSecret())
+        : false,
+    });
+    if (decision !== "ok") {
+      // Non-admins never learn that admin APIs exist.
+      if (adminRule === "admin-api") return new NextResponse("Not Found", { status: 404 });
+      const to = decision === "forbidden" ? "/" : "/admin/login";
+      return noindex(NextResponse.redirect(new URL(to, request.url)));
+    }
+    return noindex(supabaseResponse);
+  }
 
   // Bio Pages / dashboard access (defense in depth — handlers re-check with requireRealUser)
   const rule = getAccessRule(request.nextUrl.pathname, request.method);

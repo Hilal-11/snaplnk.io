@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@/lib/analytics/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -92,6 +93,7 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
         setCreating(false);
         return;
       }
+      track("bio_page_create", { template: templateId });
       router.push(`/dashboard/bio-pages/${json.data.id}/edit`);
     } catch {
       setError("Network error — please try again");
@@ -196,7 +198,10 @@ export default function NewBioPage({ initialTemplate }: { initialTemplate: strin
                     type="button"
                     role="radio"
                     aria-checked={active}
-                    onClick={() => setTemplateId(t.id)}
+                    onClick={() => {
+                      setTemplateId(t.id);
+                      track("bio_template_select", { template: t.id });
+                    }}
                     className={`group flex flex-col items-center gap-1.5 rounded-lg border p-1.5 transition-all ${
                       active ? "border-brand ring-2 ring-brand/20" : "border-neutral-200 hover:border-neutral-300"
                     }`}

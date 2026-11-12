@@ -1,4 +1,5 @@
 "use client"
+import { track } from "@/lib/analytics/client";
 import React, { useState , useEffect } from 'react'
 import { BsStars } from 'react-icons/bs'
 import { FiBarChart2, FiBell, FiCheckSquare, FiGrid, FiLink, FiLoader } from 'react-icons/fi'
@@ -19,6 +20,7 @@ export default function Hero() {
   const router = useRouter();
   
   async function handleCreate() {
+    track("cta_click", { cta: "hero_shorten" });
     setError(null);
     setShortUrl(null);
 

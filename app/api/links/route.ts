@@ -1,5 +1,6 @@
 // app/api/links/route.ts
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateShortCode } from "@/lib/utils/generateShortCode";
 import { generateQrCodeBuffer } from "@/lib/utils/generateQrCode";
@@ -296,6 +297,19 @@ export async function POST(request: NextRequest) {
   } catch (qrError) {
     console.error("[POST /api/links] QR generation/upload failed:", qrError);
   }
+
+  after(() =>
+    trackServerEvent(request, "link_create", {
+      userId: user.id,
+      path: "/api/links",
+      metadata: {
+        custom_alias: isCustomAlias,
+        has_tags: !!cleanTags,
+        has_expiry: !!expiresAt,
+        qr: !!link?.qr_code_url,
+      },
+    })
+  );
 
   return Response.json({ data: link, short_url: shortUrl }, { status: 201, headers: rlHeaders });
 }
