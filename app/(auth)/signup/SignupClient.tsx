@@ -133,6 +133,7 @@ export default function LoginPage() {
 
   const searchParams  = useSearchParams()
   const hasAuthError  = searchParams.get('error') === 'auth'
+  const isBanned      = searchParams.get('error') === 'banned'
   // Where to go after signing in (e.g. back to the create form with the pasted URL).
   const next = safeNext(searchParams.get('next'))
   const pendingUrl = next.startsWith('/dashboard/links/new?url=')
@@ -228,6 +229,12 @@ if (result && 'success' in result) setMessage({ type: 'success', text: result.su
                     {pendingUrl}
                   </p>
                   <p className="mt-1 text-xs opacity-80">We&apos;ll take you straight to it once you&apos;re in — it&apos;s free.</p>
+                </div>
+              )}
+
+              {isBanned && (
+                <div role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 font-sans text-sm text-red-600">
+                  This account has been suspended. Contact support if you think this is a mistake.
                 </div>
               )}
 

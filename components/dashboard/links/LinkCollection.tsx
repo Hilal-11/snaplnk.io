@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@/lib/analytics/client";
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { Spinner } from "@/components/ui/spinner";
@@ -223,7 +224,10 @@ export default function LinkCollection({
       updateLink(l.id, { archivedLink: !l.archived_link }, { archived_link: !l.archived_link }),
     onToggleActive: (l) => updateLink(l.id, { isActive: !l.is_active }, { is_active: !l.is_active }),
     onTagsChange: (l, tags) => updateLink(l.id, { tags }, { tags }),
-    onTagClick: setTagFilter,
+    onTagClick: (tag) => {
+      setTagFilter(tag);
+      track("tag_click", { scope });
+    },
     onRestore: restore,
     onPurge: (l) => setPurging([l]),
     onReactivate: reactivate,

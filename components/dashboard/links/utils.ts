@@ -1,3 +1,4 @@
+import { track } from "@/lib/analytics/client";
 import type { LinkItem, LinkStatus } from "./types";
 
 export function formatDate(date: string | Date, withYear = true): string {
@@ -49,6 +50,7 @@ export function displayTitle(link: LinkItem): string {
 }
 
 export async function downloadQr(qrUrl: string, fileName: string) {
+  track("qr_download", { code: fileName.slice(0, 40) });
   const res = await fetch(qrUrl);
   const blob = await res.blob();
   const blobUrl = URL.createObjectURL(blob);
@@ -63,6 +65,7 @@ export async function downloadQr(qrUrl: string, fileName: string) {
 
 /** Native share sheet when available, clipboard otherwise. Returns "copied" if it fell back. */
 export async function shareUrl(url: string, title?: string): Promise<"shared" | "copied" | "cancelled"> {
+  track("link_share", { native: typeof navigator !== "undefined" && !!navigator.share });
   if (typeof navigator !== "undefined" && navigator.share) {
     try {
       await navigator.share({ title: title ?? url, url });

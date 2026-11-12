@@ -1,11 +1,12 @@
 import { geolocation } from "@vercel/functions";
 import { UAParser } from "ua-parser-js";
 import { isbot } from "isbot";
-import crypto from "crypto";
+import { visitorHash } from "@/lib/analytics/hash";
 import type { NextRequest } from "next/server";
 
 export interface ClickInfo {
-  ip_address: string | null;
+  /** Always null: raw IPs are not stored. Kept for the existing column. */
+  ip_address: null;
   user_agent: string | null;
   referrer: string | null;
   referrer_domain: string | null;
@@ -48,13 +49,12 @@ export function parseClickInfo(request: NextRequest): ClickInfo {
   const geo = geolocation(request);
   const botDetected = isbot(userAgentString);
 
-  const visitorHash = crypto
-    .createHash("sha256")
-    .update(`${ipAddress || "unknown"}-${userAgentString}`)
-    .digest("hex");
+  // Privacy: the raw IP is used only to derive a keyed hash for unique-visitor counts;
+  // it is never stored (see ANALYTICS_SALT and lib/analytics/hash.ts).
+  const visitorHashValue = visitorHash(ipAddress, userAgentString);
 
   return {
-    ip_address: ipAddress,
+    ip_address: null,
     user_agent: userAgentString || null,
     referrer: rawReferrer,
     referrer_domain: referrerDomain,
@@ -68,6 +68,6 @@ export function parseClickInfo(request: NextRequest): ClickInfo {
     os: uaResult.os.name || "Unknown",
     os_version: uaResult.os.version || null,
     is_bot: botDetected,
-    visitor_hash: visitorHash,
+    visitor_hash: visitorHashValue,
   };
 }
