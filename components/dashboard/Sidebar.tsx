@@ -110,7 +110,7 @@ export default function Sidebar({ mobile = false }: { mobile?: boolean }) {
                   pathname === item.href ||
                   (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
                 const Icon = item.icon;
-                if (item.disabled) {
+                if ("disabled" in item && item.disabled) {
                   return (
                     <li key={item.href}>
                       <span className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-neutral-400 cursor-not-allowed select-none">

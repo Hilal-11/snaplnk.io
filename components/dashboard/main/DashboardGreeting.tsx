@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { format } from "date-fns";
+import { displayNameOf } from "@/lib/prefs";
 
 export default async function DashboardGreeting() {
   const supabase = await createClient();
@@ -11,7 +12,11 @@ export default async function DashboardGreeting() {
     .eq("id", user?.id)
     .maybeSingle();
 
-  const name = profile?.name?.split(" ")[0] || "there";
+  // Name set in Settings → Profile wins, then the users table, then the email.
+  const meta = user?.user_metadata ?? {};
+  const fromSettings = typeof meta.name === "string" && meta.name.trim() ? meta.name : "";
+  const full = fromSettings || profile?.name || displayNameOf(user);
+  const name = full.trim().split(" ")[0] || "there";
   const today = format(new Date(), "EEEE, MMMM d, yyyy");
 
   return (
